@@ -10,9 +10,9 @@ import { LatLngLiteral } from "leaflet";
 import { SearchValues } from "./Map";
 import { DisplayOptions } from "./Map";
 import  Map  from "./Map"
-// const DynamicMap = dynamic(() => import('./Map'), {
-//     ssr: false 
-// });
+const DynamicMap = dynamic(() => import('./Map'), {
+    ssr: false 
+});
 
 
 export default function MapClientWrapper() {
@@ -102,7 +102,7 @@ export default function MapClientWrapper() {
         <main className="h-full w-full flex">
     
             <section className='flex h-full ml-2 w-1/3 items-center justify-center'>
-                <Map 
+                <Map
                             activeSpecies={searchedValue.specimenName} 
                             position={coordinates ?? defaultCoordinates} 
                             userCoordinates={userCoordinates} 
