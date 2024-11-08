@@ -1,23 +1,40 @@
-"use client";
+/**
+ * @file src/app/components/map/MapClientWrapper.tsx
+ * 
+ * @fileoverview Holds the header, map, image gallery, and footer
+ * 
+ * @todo add footer and leader board
+ */
 
-import "react-image-gallery/styles/css/image-gallery.css";
-import dynamic from 'next/dynamic';
-import { Header } from "@/app/components/Header";
-import ImageGallery from 'react-image-gallery';
+"use client"
+
+//default imports
+import "react-image-gallery/styles/css/image-gallery.css"
+import ImageGallery from 'react-image-gallery'
 import { ReactImageGalleryItem } from "react-image-gallery"
-import { useState, useEffect } from "react";
-import { LatLngLiteral } from "leaflet";
-import { SearchValues } from "./Map";
-import { DisplayOptions } from "./Map";
-import  Map  from "./Map"
+import { useState, useEffect } from "react"
+import { LatLngLiteral } from "leaflet"
+
+//custom imports
+import { SearchValues } from "./Map"
+import { DisplayOptions } from "./Map"
+import { Header } from "@/app/components/Header"
+import { Footer } from "@/app/components/Footer"
+import { LeaderBoard }  from "@/app/components/map/LeaderBoard"
+
+//dynamic imports
+import dynamic from 'next/dynamic'
 const DynamicMap = dynamic(() => import('./Map'), {
     ssr: false 
-});
+})
 
-
+/**
+ * MapClientWrapper Component
+ * 
+ * @returns {JSX.Element} A JSX element representing the MapClientWrapper component.
+ */
 export default function MapClientWrapper() {
-    const defaultCoordinates: LatLngLiteral = { lat: 40, lng: -95 };
-
+    const defaultCoordinates: LatLngLiteral = { lat: 40, lng: -95 }
     const [searchedValue, setSearchedValue] = useState<SearchValues>({
                                                 specimenName: undefined, 
                                                 taxonId: -1 
@@ -32,7 +49,8 @@ export default function MapClientWrapper() {
     const [userCoordinates, setUserCoordinates] = useState<LatLngLiteral>()
     const [coordinates, setCoordinates] = useState<LatLngLiteral>()
 
-    const [images, setImages] = useState<any[]>([]);
+    const [images, setImages] = useState<any[]>([])
+
     const [observations, setObservations] = useState<any[]>([])
     const [topObservers, setTopObservers] = useState<any[]>()
     const [topIdentifiers, setTopIdentifiers] = useState<any[]>()
@@ -53,53 +71,53 @@ export default function MapClientWrapper() {
     }
     
     useEffect(() => {
-
         const iNatFetch = async () => {
-    
             if(!searchedValue.specimenName)
-                return;
-    
+                return
+
             const iNatFetchObj = {
                 activeSpecies: searchedValue.specimenName,
                 userCoordinates: userCoordinates ? userCoordinates : undefined,
                 radius: displayOptions.radius,
                 qualityGrade: displayOptions.gradeType
-            };
-    
+            }
+
             const res = await fetch('api/collections/inaturalist', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',  
                 },
                 body: JSON.stringify(iNatFetchObj) 
-            });
-    
+            })
+
             if (res.ok) {
-                const json = await res.json();
-    
-                setCoordinates(userCoordinates);
-                setObservations(json.data.observations);
-                setImages(json.data.images);
-                setTopObservers(json.data.topObservers);
-                setTopIdentifiers(json.data.topIdentifiers);
-    
+                const json = await res.json()
+                setCoordinates(userCoordinates)
+            
+                setObservations(json.data.observations)
+            
+                setImages(json.data.images)
+            
+                setTopObservers(json.data.topObservers)
+            
+                setTopIdentifiers(json.data.topIdentifiers)
                 if (!userCoordinates) {
-                    setCoordinates(json.data.point);
+                    setCoordinates(json.data.point)
                 }
+
             } else {
-                console.error("Error fetching iNaturalist data:", res.statusText);
+                console.error("Error fetching iNaturalist data:", res.statusText)
             }
-        };
-    
-        iNatFetch();
-    
-    }, [userCoordinates, displayOptions]); 
+        }
+        iNatFetch()
+    }, [userCoordinates, displayOptions])
+ 
  
     return (
         <>
         <Header setSearchValues={setSearchedValue} />
     
-        <main className="h-[calc(100vh-70px)] w-full flex">
+        <main className="h-[103vh] w-full flex">
     
             <section className='flex h-full ml-2 w-1/3 items-center justify-center'>
                 <DynamicMap
@@ -117,10 +135,10 @@ export default function MapClientWrapper() {
                 {observations && (
                     <>
                         <p className='flex h-[10%] w-full justify-center items-center text-2xl xl:text-3xl'>{(observationTitle as string)}</p>
-                        <div className='w-4/5  xl:w-[95%] h-[500px] xl:h-[75%]'>
+                        <div className='w-3/5  xl:w-[95%] h-[60%] xl:h-[75%] '>
                             <ImageGallery autoPlay items={images as ReactImageGalleryItem[]} slideInterval={100} onSlide={(currentIndex) => setCredentials(currentIndex)}/>
                         </div>
-                        <div id='observationCredentials' className='flex flex-col h-[25%] xl:h-[15%] w-3/5 text-center items-center justify-center text-base xl:text-lg p-2 m-2'>
+                        <div id='observationCredentials' className='flex flex-col h-[30%] xl:h-[20%] w-3/5 text-center items-center justify-center text-base xl:text-lg m-2'>
                             <p className="">{observationLocation}</p>
                             <p className="">{observationDate}</p>
                             <p className='mt-1'>
@@ -133,10 +151,12 @@ export default function MapClientWrapper() {
             </section>
     
             <section>
-                <p></p>
+                <LeaderBoard identifiers={topIdentifiers} observers={topObservers} />
             </section>
         </main>
+        
+        <Footer/>
         </>
-    );
-    
+    )
+
 }
