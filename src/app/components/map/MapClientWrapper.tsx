@@ -102,7 +102,7 @@ export default function MapClientWrapper() {
         <main className="h-full w-full flex">
     
             <section className='flex h-full ml-2 w-1/3 items-center justify-center'>
-                <Map
+                <DynamicMap
                             activeSpecies={searchedValue.specimenName} 
                             position={coordinates ?? defaultCoordinates} 
                             userCoordinates={userCoordinates} 
