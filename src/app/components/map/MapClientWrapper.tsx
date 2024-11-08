@@ -99,7 +99,7 @@ export default function MapClientWrapper() {
         <>
         <Header setSearchValues={setSearchedValue} />
     
-        <main className="h-full w-full flex">
+        <main className="h-[calc(100vh-70px)] w-full flex">
     
             <section className='flex h-full ml-2 w-1/3 items-center justify-center'>
                 <DynamicMap

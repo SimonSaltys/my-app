@@ -5,5 +5,5 @@ export default function MapPage() {
 
     return (
          <MapClientWrapper/>
-    );
+    )
 }
