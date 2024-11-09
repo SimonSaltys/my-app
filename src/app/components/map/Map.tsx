@@ -78,7 +78,7 @@ export default function Map(props: MapProps) {
     };
 
    return (
-        <div className="relative">
+        <div className="relative min-h[100vh]">
         
         <button 
             onClick={toggleMapOptions} 
@@ -96,7 +96,7 @@ export default function Map(props: MapProps) {
             </div>
         }
 
-        <MapContainer className="z-0 rounded-xl" center={[props.position.lat, props.position.lng]} zoom={3}  style={{ height: "100vh", width: "30vw"}} scrollWheelZoom={false}>
+        <MapContainer className="z-0 rounded-xl h-full w-[30vw]" center={[props.position.lat, props.position.lng]} zoom={3} scrollWheelZoom={false}>
             <LocationFinder />
             <TileLayer
                 attribution={attribution}
