@@ -119,7 +119,7 @@ export default function MapClientWrapper() {
     
         <main className="flex w-full h-full">
     
-            <section className='flex ml-2 w-1/3 my-2'>
+            <section className='hidden lg:flex ml-2 w-1/3 my-2'>
                 <DynamicMap
                             activeSpecies={searchedValue.specimenName} 
                             position={coordinates ?? defaultCoordinates} 
@@ -131,26 +131,29 @@ export default function MapClientWrapper() {
                 />
             </section>
             
-            <section className='flex items-center justify-center w-full lg:w-1/3 flex-col'>
+            <section className='flex items-center justify-center h-full w-full lg:w-1/3 flex-col'>
                 {observations && (
                     <>
-                        <p className='flex h-[10%] w-full justify-center items-center text-2xl xl:text-3xl'>{(observationTitle as string)}</p>
-                        <div className='w-4/5 xl:w-[95%] h-[60%] xl:h-[75%]'>
+                        <p className='flex w-full h-[50px] justify-center items-center text-2xl xl:text-3xl'>{(observationTitle as string)}</p>
+                        <div className='w-3/5 h-[500px] lg:h-[60%] lg:w-4/5 xl:w-[95%] xl:h-[75%]'>
                             <ImageGallery autoPlay items={images as ReactImageGalleryItem[]} slideInterval={5000} onSlide={(currentIndex) => setCredentials(currentIndex)}/>
                         </div>
-                        <div id='observationCredentials' className='flex flex-col h-[20%] xl:h-[30%] w-3/5 text-center items-center justify-center text-base xl:text-lg'>
-                            <p className="">{observationLocation}</p>
-                            <p className="">{observationDate}</p>
-                            <p className='mt-1'>
-                                <img className='inline-block h-[48px] w-[48px] mr-4' src={observerIcon} alt='Observer Icon' />
-                                <span className="">{observer}</span>
-                            </p>
+                        <div className="flex flex-col items-center justify-center h-[160px] w-full">
+                            <div id='observationCredentials' className='flex flex-col h-[20%] xl:h-[30%] w-4/5 text-center items-center justify-center text-base xl:text-lg'>
+                                <p className="">{observationLocation}</p>
+                                <p className="">{observationDate}</p>
+                                <p className='mt-1'>
+                                    <img className='inline-block h-[48px] w-[48px] mr-4' src={observerIcon} alt='Observer Icon' />
+                                    <span className="">{observer}</span>
+                                </p>
+                            </div>
                         </div>
+                        
                     </>
                 )}
             </section>
     
-            <section className="lg:flex flex-col justify-center items-center w-1/3">
+            <section className="hidden lg:flex flex-col justify-center items-center w-1/3">
                 <LeaderBoard identifiers={topIdentifiers} observers={topObservers} />
             </section>
         </main>
