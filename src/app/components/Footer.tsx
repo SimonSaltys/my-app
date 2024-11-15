@@ -9,7 +9,7 @@
 export function Footer() {
     
     return (
-        <header className="bg-lime-800 py-5 flex justify-start items-center">
+        <header className="bg-old-growth-green py-5 flex justify-start items-center">
             <div className="w-full">
                <p>FOOTER DESCRIPTION</p>
             </div>

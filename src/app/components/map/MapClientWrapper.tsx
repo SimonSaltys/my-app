@@ -18,6 +18,7 @@ import { LatLngLiteral } from "leaflet"
 //custom imports
 import { SearchValues } from "./Map"
 import { DisplayOptions } from "./Map"
+import { MapNavbar } from "@/app/components/map/navitems/MapNavbar"
 import { Header } from "@/app/components/Header"
 import { Footer } from "@/app/components/Footer"
 import { LeaderBoard }  from "@/app/components/map/LeaderBoard"
@@ -48,6 +49,7 @@ export default function MapClientWrapper() {
 
     const [userCoordinates, setUserCoordinates] = useState<LatLngLiteral>()
     const [coordinates, setCoordinates] = useState<LatLngLiteral>()
+    const [activeSection, setActiveSection] = useState<string>("images")
 
     const [images, setImages] = useState<any[]>([])
 
@@ -115,10 +117,9 @@ export default function MapClientWrapper() {
  
     return (
         <>
-        <Header setSearchValues={setSearchedValue} />
+        <MapNavbar setActiveSection={setActiveSection}/>
     
-        <main className="flex w-full h-full">
-    
+        <main className="flex w-full h-[90vh]">
             <section className='hidden lg:flex ml-2 w-1/3 my-2'>
                 <DynamicMap
                             activeSpecies={searchedValue.specimenName} 
