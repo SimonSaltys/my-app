@@ -19,16 +19,16 @@ interface MapNavbarProps {
 export function MapNavbar({ setActiveSection } : MapNavbarProps) {
 
     const handleClick = (section : string) => {
-
+            setActiveSection(section)
     }
 
 
     return (
         <Navbar className="h-[7vh] bg-old-growth-green py-2 px-4" fluid rounded border>
             <div className="flex justify-evenly items-center w-full lg:hidden">
-                <NavButton label="Locations" onClick={() => handleClick("Locations")} />
-                <NavButton label="Images" onClick={() => handleClick("Images")} />
-                <NavButton label="Leader Board" onClick={() => handleClick("Leader Board")} />
+                <NavButton label="Locations" onClick={() => handleClick("locations")} />
+                <NavButton label="Images" onClick={() => handleClick("images")} />
+                <NavButton label="Leader Board" onClick={() => handleClick("leaderboard")} />
             </div>
         </Navbar>
     );

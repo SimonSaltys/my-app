@@ -120,7 +120,8 @@ export default function MapClientWrapper() {
         <MapNavbar setActiveSection={setActiveSection}/>
     
         <main className="flex w-full h-[90vh]">
-            <section className='hidden lg:flex ml-2 w-1/3 my-2'>
+            <section className={`lg:flex lg:w-1/3 ml-2 my-2 ${activeSection === "locations" ? "flex w-full justify-center items-center" : "hidden"}`}>
+                
                 <DynamicMap
                             activeSpecies={searchedValue.specimenName} 
                             position={coordinates ?? defaultCoordinates} 
@@ -132,7 +133,7 @@ export default function MapClientWrapper() {
                 />
             </section>
             
-            <section className='flex items-center justify-center h-full w-full lg:w-1/3 flex-col'>
+            <section className={`lg:flex items-center justify-center h-full w-full lg:w-1/3 flex-col ${activeSection === "images" ? "flex" : "hidden"}`}>
                 {observations && (
                     <>
                         <p className='flex w-full h-[50px] justify-center items-center text-2xl xl:text-3xl'>{(observationTitle as string)}</p>
@@ -154,7 +155,7 @@ export default function MapClientWrapper() {
                 )}
             </section>
     
-            <section className="hidden lg:flex flex-col justify-center items-center w-1/3">
+            <section className={`lg:flex flex-col justify-center items-center lg:w-1/3 ${activeSection === 'leaderboard' ? 'flex w-full justify-center items-center' : 'hidden'}`}>
                 <LeaderBoard identifiers={topIdentifiers} observers={topObservers} />
             </section>
         </main>
