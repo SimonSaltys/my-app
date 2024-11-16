@@ -14,9 +14,10 @@ import { NavButton } from "./NavButton";
 
 interface MapNavbarProps {
     setActiveSection : Dispatch<SetStateAction<string>> 
+    activeSelection : string
   }
 
-export function MapNavbar({ setActiveSection } : MapNavbarProps) {
+export function MapNavbar({ setActiveSection, activeSelection } : MapNavbarProps) {
 
     const handleClick = (section : string) => {
             setActiveSection(section)
@@ -24,7 +25,7 @@ export function MapNavbar({ setActiveSection } : MapNavbarProps) {
 
 
     return (
-        <Navbar className="h-[7vh] bg-old-growth-green py-2 px-4" fluid rounded border>
+        <Navbar className="bg-old-growth-green py-2 px-4 min-h-[60px]" fluid rounded border>
             <div className="flex justify-evenly items-center w-full lg:hidden">
                 <NavButton label="Locations" onClick={() => handleClick("locations")} />
                 <NavButton label="Images" onClick={() => handleClick("images")} />

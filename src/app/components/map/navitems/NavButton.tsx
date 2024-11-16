@@ -3,21 +3,21 @@
  * 
  * @fileoverview Holds the relative navbar information for the map
  * 
- * @todo 
+ * @todo stay highlighted
  */
 
-"use client";
+"use client"
 
-import { Button } from "flowbite-react";
+import { Button } from "flowbite-react"
 
 interface NavButtonProps {
-  label: string;
-  onClick: () => void;
+  label: string
+  onClick: () => void
 }
 
 export function NavButton({ label, onClick }: NavButtonProps) {
   return (
-    <Button className="bg-sea-glass text-black focus:ring-4 focus:ring-dune-grass" onClick={onClick}>
+    <Button className="bg-sea-glass text-black active:ring-4 active:ring-chanterelle-gold focus:ring-0 focus:ring-sea-glass" onClick={onClick}>
       {label}
     </Button>
   )

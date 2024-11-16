@@ -3,7 +3,7 @@
  * 
  * @fileoverview Holds the header, map, image gallery, and footer
  * 
- * @todo add footer and leader board
+ * @todo make sure mr-2 goes away after sizing back to large
  */
 
 "use client"
@@ -117,10 +117,12 @@ export default function MapClientWrapper() {
  
     return (
         <>
-        <MapNavbar setActiveSection={setActiveSection}/>
+        
+        <MapNavbar activeSelection={activeSection} setActiveSection={setActiveSection}/>
+
     
-        <main className="flex w-full h-[90vh]">
-            <section className={`lg:flex lg:w-1/3 ml-2 my-2 ${activeSection === "locations" ? "flex w-full justify-center items-center" : "hidden"}`}>
+        <main className="flex w-full h-[calc(100vh-120px)] min-h-[calc(100vh-120px)] overflow-y-auto">
+            <section className={`lg:flex justify-center items-center lg:w-1/3 ml-2 my-2 ${activeSection === "locations" ? "mr-2 flex w-full" : "hidden"}`}>
                 
                 <DynamicMap
                             activeSpecies={searchedValue.specimenName} 
@@ -133,11 +135,11 @@ export default function MapClientWrapper() {
                 />
             </section>
             
-            <section className={`lg:flex items-center justify-center h-full w-full lg:w-1/3 flex-col ${activeSection === "images" ? "flex" : "hidden"}`}>
+            <section className={`lg:flex items-center justify-center w-full lg:w-1/3 flex-col ${activeSection === "images" ? "flex" : "hidden"}`}>
                 {observations && (
                     <>
-                        <p className='flex w-full h-[50px] justify-center items-center text-2xl xl:text-3xl'>{(observationTitle as string)}</p>
-                        <div className='w-3/5 h-[500px] lg:h-[60%] lg:w-4/5 xl:w-[95%] xl:h-[75%]'>
+                        <p className='flex w-full h-[50px] justify-center items-center text-2xl'>{(observationTitle as string)}</p>
+                        <div className='w-3/5 h-[70%] lg:h-[60%] lg:w-4/5'>
                             <ImageGallery autoPlay items={images as ReactImageGalleryItem[]} slideInterval={5000} onSlide={(currentIndex) => setCredentials(currentIndex)}/>
                         </div>
                         <div className="flex flex-col items-center justify-center h-[160px] w-full">
