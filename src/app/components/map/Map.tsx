@@ -1,10 +1,9 @@
 "use client"
 import 'leaflet/dist/leaflet.css'
 import { MapContainer, TileLayer, Marker, Popup, Circle, useMapEvents } from 'react-leaflet'
-import { useState , useEffect, Dispatch, SetStateAction} from "react"
+import { useState , Dispatch, SetStateAction} from "react"
 import { MapOptions } from '@/app/components/map/MapOptions'
 import L, { LatLngLiteral } from 'leaflet'
-import { Console } from 'console'
 
 export interface SearchValues {
     specimenName : string | undefined

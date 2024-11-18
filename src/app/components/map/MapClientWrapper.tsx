@@ -19,7 +19,6 @@ import { LatLngLiteral } from "leaflet"
 import { SearchValues } from "./Map"
 import { DisplayOptions } from "./Map"
 import { MapNavbar } from "@/app/components/map/navitems/MapNavbar"
-import { Header } from "@/app/components/Header"
 import { Footer } from "@/app/components/Footer"
 import { LeaderBoard }  from "@/app/components/map/LeaderBoard"
 
@@ -121,7 +120,7 @@ export default function MapClientWrapper() {
         <MapNavbar activeSelection={activeSection} setActiveSection={setActiveSection}/>
    
         <main className="flex w-full h-[calc(100vh-120px)] min-h-[calc(100vh-120px)] overflow-y-auto">
-            <section className={`h-full lg:flex justify-center items-center lg:w-1/3 ml-2 my-2 ${activeSection === "locations" ? "mr-2 flex w-full" : "hidden"}`}>
+            <section className={`h-[95%] min-h-[600px] lg:flex justify-center items-center lg:w-1/3 ml-2 mt-4 ${activeSection === "locations" ? "mr-2 flex w-full" : "hidden"}`}>
                 <DynamicMap
                             activeSpecies={searchedValue.specimenName} 
                             position={coordinates ?? defaultCoordinates} 
@@ -133,7 +132,7 @@ export default function MapClientWrapper() {
                 />
             </section>
             
-            <section className={`lg:flex lg:w-1/3 items-center justify-center w-full flex-col ${activeSection === "images" ? "flex" : "hidden"}`}>
+            <section className={`lg:flex min-h-[600px] lg:w-1/3 items-center justify-center w-full flex-col ${activeSection === "images" ? "flex" : "hidden"}`}>
                 {observations && (
                     <>
                         <p className='flex w-full h-[10%] justify-center items-center text-2xl'>{(observationTitle as string)}</p>
@@ -155,7 +154,7 @@ export default function MapClientWrapper() {
                 )}
             </section>
     
-            <section className={`lg:flex flex-col justify-center items-center lg:w-1/3 ${activeSection === 'leaderboard' ? 'flex w-full' : 'hidden'}`}>
+            <section className={`lg:flex lg:w-1/3 min-h-[600px] flex-col justify-center items-center text-xs  ${activeSection === 'leaderboard' ? 'flex w-full text-xl' : 'hidden'}`}>
                 <LeaderBoard identifiers={topIdentifiers} observers={topObservers} />
             </section>
         </main>
