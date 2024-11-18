@@ -28,9 +28,8 @@ export function LeaderBoard(props : {identifiers : any[] | undefined, observers 
 
     return(
         <>
-        <div className="min-h[90vh] flex-col space-y-12">
         { props.observers &&
-            <div className="bg-dune-grass grid grid-cols-3 w-[95%] h-[45%] my-4 rounded-lg">
+            <div className="bg-dune-grass grid grid-cols-3 w-[95%] h-full my-4 rounded-lg">
                  <div className="flex border-b justify-center items-center">#</div>
                  <div className="flex border-b justify-center items-center">Observer</div>
                  <div className="flex border-b justify-center items-center">Observations</div>
@@ -47,7 +46,7 @@ export function LeaderBoard(props : {identifiers : any[] | undefined, observers 
         }
 
         { props.identifiers &&
-             <div className="bg-dune-grass grid grid-cols-3 w-[95%] h-[45%] my-4 rounded-lg">
+             <div className="bg-dune-grass grid grid-cols-3 w-[95%] h-full my-4 rounded-lg">
                  <div className="flex border-b justify-center items-center">#</div>
                  <div className="flex border-b justify-center items-center">Identifier</div>
                  <div className="flex border-b justify-center items-center">Identifications</div>
@@ -62,7 +61,6 @@ export function LeaderBoard(props : {identifiers : any[] | undefined, observers 
                     ))}
              </div>
         }
-        </div>
        
         </>
     )

@@ -119,11 +119,9 @@ export default function MapClientWrapper() {
         <>
         
         <MapNavbar activeSelection={activeSection} setActiveSection={setActiveSection}/>
-
-    
+   
         <main className="flex w-full h-[calc(100vh-120px)] min-h-[calc(100vh-120px)] overflow-y-auto">
-            <section className={`lg:flex justify-center items-center lg:w-1/3 ml-2 my-2 ${activeSection === "locations" ? "mr-2 flex w-full" : "hidden"}`}>
-                
+            <section className={`h-full lg:flex justify-center items-center lg:w-1/3 ml-2 my-2 ${activeSection === "locations" ? "mr-2 flex w-full" : "hidden"}`}>
                 <DynamicMap
                             activeSpecies={searchedValue.specimenName} 
                             position={coordinates ?? defaultCoordinates} 
@@ -135,10 +133,10 @@ export default function MapClientWrapper() {
                 />
             </section>
             
-            <section className={`lg:flex items-center justify-center w-full lg:w-1/3 flex-col ${activeSection === "images" ? "flex" : "hidden"}`}>
+            <section className={`lg:flex lg:w-1/3 items-center justify-center w-full flex-col ${activeSection === "images" ? "flex" : "hidden"}`}>
                 {observations && (
                     <>
-                        <p className='flex w-full h-[50px] justify-center items-center text-2xl'>{(observationTitle as string)}</p>
+                        <p className='flex w-full h-[10%] justify-center items-center text-2xl'>{(observationTitle as string)}</p>
                         <div className='w-3/5 h-[70%] lg:h-[60%] lg:w-4/5'>
                             <ImageGallery autoPlay items={images as ReactImageGalleryItem[]} slideInterval={5000} onSlide={(currentIndex) => setCredentials(currentIndex)}/>
                         </div>
@@ -157,12 +155,12 @@ export default function MapClientWrapper() {
                 )}
             </section>
     
-            <section className={`lg:flex flex-col justify-center items-center lg:w-1/3 ${activeSection === 'leaderboard' ? 'flex w-full justify-center items-center' : 'hidden'}`}>
+            <section className={`lg:flex flex-col justify-center items-center lg:w-1/3 ${activeSection === 'leaderboard' ? 'flex w-full' : 'hidden'}`}>
                 <LeaderBoard identifiers={topIdentifiers} observers={topObservers} />
             </section>
         </main>
-        
         <Footer/>
+        
         </>
     )
 
