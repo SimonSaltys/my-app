@@ -154,7 +154,7 @@ export default function MapClientWrapper() {
                 )}
             </section>
     
-            <section className={`lg:flex lg:w-1/3 min-h-[600px] flex-col justify-center items-center text-xs  ${activeSection === 'leaderboard' ? 'flex w-full text-xl' : 'hidden'}`}>
+            <section className={`lg:flex lg:w-1/3 min-h-[600px] flex-col justify-center items-center  ${activeSection === 'leaderboard' ? 'flex w-full' : 'hidden'} text-md`}>
                 <LeaderBoard identifiers={topIdentifiers} observers={topObservers} />
             </section>
         </main>
