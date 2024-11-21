@@ -74,12 +74,10 @@ export default function MapClientWrapper() {
     
     useEffect(() => {
         const iNatFetch = async () => {
-            if (!searchedValue.specimenName || !userCoordinates || !displayOptions)
-                return
 
             const iNatFetchObj : iNatFetchObj = {
-                specimenName: searchedValue.specimenName,
-                coordinate: userCoordinates,
+                specimenName: searchedValue.specimenName ?? '',
+                coordinate: userCoordinates ?? defaultCoordinates,
                 searchOptions : displayOptions
             }
 
@@ -93,13 +91,13 @@ export default function MapClientWrapper() {
 
             if (res.ok) {
                 const json : iNatApiResult = await res.json()
-
+                
                 setCoordinates(userCoordinates)
             
                 setObservations(json.observations)
 
                 setImages(json.images)
-            
+
                 setTopIdentifiers(json.leadingUsers.identifiers)
             
                 setTopObservers(json.leadingUsers.observers)
@@ -108,12 +106,17 @@ export default function MapClientWrapper() {
                     setCoordinates(defaultCoordinates)
                 }
 
+               
             } else {
                 console.error("Error fetching iNaturalist data:", res.text)
             }
         }
         iNatFetch()
-    }, [userCoordinates, displayOptions])
+
+        if (!userCoordinates) {
+            setCoordinates(defaultCoordinates);
+        }
+    }, [searchedValue,userCoordinates, displayOptions])
  
  
     return (
@@ -139,7 +142,8 @@ export default function MapClientWrapper() {
                     <>
                         <p className='flex w-full h-[10%] justify-center items-center text-2xl'>{(observationTitle as string)}</p>
                         <div className='w-3/5 h-[70%] lg:h-[60%] lg:w-4/5'>
-                            <ImageGallery autoPlay items={images as ReactImageGalleryItem[]} slideInterval={5000} onSlide={(currentIndex) => setCredentials(currentIndex)}/>
+                            <ImageGallery autoPlay items={images as ReactImageGalleryItem[]} slideInterval={5000} onSlide={(currentIndex) => setCredentials(currentIndex)} 
+                                onPlay={(currentIndex) => setCredentials(currentIndex)}/>
                         </div>
                         <div className="flex flex-col items-center justify-center h-[160px] w-full">
                             <div id='observationCredentials' className='flex flex-col h-[20%] xl:h-[30%] w-4/5 text-center items-center justify-center text-base xl:text-lg'>

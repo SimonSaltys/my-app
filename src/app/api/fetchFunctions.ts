@@ -46,7 +46,7 @@ export const fetchSpecimenObservations = async (specimenName: string, coordinate
             },
 
             //add more default values if the ?? fails
-            observedDate: result.observed_on_details.date ?? '',
+            observedDate: result.observed_on_details?.date ?? '',
             species_guess: result.species_guess ?? specimenName,
             taxon_name: result.taxon.preferred_common_name ?? specimenName,
             place_guess: result.place_guess ?? '',
