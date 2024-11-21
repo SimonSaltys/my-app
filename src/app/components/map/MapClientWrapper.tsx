@@ -24,6 +24,7 @@ import { LeaderBoard }  from "@/app/components/map/LeaderBoard"
 
 //dynamic imports
 import dynamic from 'next/dynamic'
+import { iNatApiResult, iNatFetchObj, iNatLeadingUser, iNatUserObservation } from "@/app/api/collections/inaturalist/route"
 const DynamicMap = dynamic(() => import('./Map'), {
     ssr: false 
 })
@@ -52,9 +53,9 @@ export default function MapClientWrapper() {
 
     const [images, setImages] = useState<any[]>([])
 
-    const [observations, setObservations] = useState<any[]>([])
-    const [topObservers, setTopObservers] = useState<any[]>()
-    const [topIdentifiers, setTopIdentifiers] = useState<any[]>()
+    const [observations, setObservations] = useState<iNatUserObservation[]>([])
+    const [topObservers, setTopObservers] = useState<iNatLeadingUser[]>([])
+    const [topIdentifiers, setTopIdentifiers] = useState<iNatLeadingUser[]>([])
 
     const [observer, setObserver] = useState<string>()
     const [observationTitle, setObservationTitle] = useState<string>()
@@ -64,23 +65,22 @@ export default function MapClientWrapper() {
 
     const setCredentials = (index: number) => {
         const observation = observations[index]
-        setObserver(observation.user.login_exact ?? observation.user.login ?? '')
-        setObservationTitle(observation.species_guess ?? observation.taxon.name ?? '')
-        setObservationDate(observation.observed_on_details.date ?? observation.time_observed_at ?? '')
-        setObservationLocation(observation.place_guess ?? '')
-        setObserverIcon(observation.user.icon ?? 'img/blankIcon.jpg')
+        setObserver(observation.user.userName)
+        setObservationTitle(observation.species_guess)
+        setObservationDate(observation.observedDate)
+        setObservationLocation(observation.place_guess)
+        setObserverIcon(observation.user.userIcon ?? 'img/blankIcon.jpg')
     }
     
     useEffect(() => {
         const iNatFetch = async () => {
-            if(!searchedValue.specimenName)
+            if (!searchedValue.specimenName || !userCoordinates || !displayOptions)
                 return
 
-            const iNatFetchObj = {
-                activeSpecies: searchedValue.specimenName,
-                userCoordinates: userCoordinates ? userCoordinates : undefined,
-                radius: displayOptions.radius,
-                qualityGrade: displayOptions.gradeType
+            const iNatFetchObj : iNatFetchObj = {
+                specimenName: searchedValue.specimenName,
+                coordinate: userCoordinates,
+                searchOptions : displayOptions
             }
 
             const res = await fetch('api/collections/inaturalist', {
@@ -92,22 +92,24 @@ export default function MapClientWrapper() {
             })
 
             if (res.ok) {
-                const json = await res.json()
+                const json : iNatApiResult = await res.json()
+
                 setCoordinates(userCoordinates)
             
-                setObservations(json.data.observations)
+                setObservations(json.observations)
+
+                setImages(json.images)
             
-                setImages(json.data.images)
+                setTopIdentifiers(json.leadingUsers.identifiers)
             
-                setTopObservers(json.data.topObservers)
-            
-                setTopIdentifiers(json.data.topIdentifiers)
+                setTopObservers(json.leadingUsers.observers)
+
                 if (!userCoordinates) {
-                    setCoordinates(json.data.point)
+                    setCoordinates(defaultCoordinates)
                 }
 
             } else {
-                console.error("Error fetching iNaturalist data:", res.statusText)
+                console.error("Error fetching iNaturalist data:", res.text)
             }
         }
         iNatFetch()
@@ -126,14 +128,14 @@ export default function MapClientWrapper() {
                             position={coordinates ?? defaultCoordinates} 
                             userCoordinates={userCoordinates} 
                             setUserCoordinates={setUserCoordinates} 
-                            observations={observations ?? []}
+                            observations={observations}
                             displayOptions={displayOptions}
                             setDisplayOptions={setDisplayOptions}
                 />
             </section>
             
             <section className={`lg:flex min-h-[600px] lg:w-1/3 items-center justify-center w-full flex-col ${activeSection === "images" ? "flex" : "hidden"}`}>
-                {observations && (
+                {observations.length > 0 && (
                     <>
                         <p className='flex w-full h-[10%] justify-center items-center text-2xl'>{(observationTitle as string)}</p>
                         <div className='w-3/5 h-[70%] lg:h-[60%] lg:w-4/5'>

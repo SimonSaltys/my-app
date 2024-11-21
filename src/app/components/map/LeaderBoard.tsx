@@ -8,6 +8,7 @@
 
 "use client"
 
+import { iNatLeadingUser } from "@/app/api/collections/inaturalist/route"
 import React from "react"
 
 /**
@@ -24,7 +25,7 @@ import React from "react"
  * 
  * @returns {JSX.Element} A JSX element representing the LeaderBoard component.
  */
-export function LeaderBoard(props : {identifiers : any[] | undefined, observers : any[] | undefined}): JSX.Element {
+export function LeaderBoard(props : {identifiers : iNatLeadingUser[], observers : iNatLeadingUser[]}): JSX.Element {
 
     return(
         <>
@@ -37,8 +38,8 @@ export function LeaderBoard(props : {identifiers : any[] | undefined, observers 
                  {props.observers.map((observer, index) => (
                         <React.Fragment key={index}>
                             <div className="flex justify-center items-center">{index + 1}</div>
-                            <div className="flex justify-center items-center">{observer.user.login_exact}</div>
-                            <div className="flex justify-center items-center">{observer.observation_count}</div>
+                            <div className="flex justify-center items-center">{observer.user.userName}</div>
+                            <div className="flex justify-center items-center">{observer.count}</div>
                         </React.Fragment>
                     ))}
 
@@ -55,7 +56,7 @@ export function LeaderBoard(props : {identifiers : any[] | undefined, observers 
                  {props.identifiers.map((identifier, index) => (
                         <React.Fragment key={index}>
                             <div className="flex justify-center items-center">{index + 1}</div>
-                            <div className="flex justify-center items-center">{identifier.user.login_exact}</div>
+                            <div className="flex justify-center items-center">{identifier.user.userName}</div>
                             <div className="flex justify-center items-center">{identifier.count}</div>
                         </React.Fragment>
                     ))}

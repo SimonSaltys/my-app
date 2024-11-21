@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup, Circle, useMapEvents } from 're
 import { useState , Dispatch, SetStateAction} from "react"
 import { MapOptions } from '@/app/components/map/MapOptions'
 import L, { LatLngLiteral } from 'leaflet'
+import { iNatUserObservation } from '@/app/api/collections/inaturalist/route'
 
 export interface SearchValues {
     specimenName : string | undefined
@@ -23,7 +24,7 @@ export interface MapProps {
     position : LatLngLiteral
     userCoordinates: LatLngLiteral | undefined 
     setUserCoordinates: Dispatch<SetStateAction<LatLngLiteral | undefined>> 
-    observations: any[]
+    observations: iNatUserObservation[]
     setDisplayOptions : Dispatch<SetStateAction<DisplayOptions>>
     displayOptions : DisplayOptions 
 }
@@ -119,27 +120,27 @@ export default function Map(props: MapProps) {
                             return (
                                 <Marker 
                                     key={index} 
-                                    position={[observation.geojson.coordinates[1], observation.geojson.coordinates[0]]} 
+                                    position={[observation.coordinates.lng, observation.coordinates.lat]} 
                                     icon={observationIcon}
                                 >
                                     <Popup>
                                         <div className='flex h-[200px] w-[300px] justify-between'>
                                             <div>
                                                 <p className='text-center text-[20px] !mt-0 !mb-[12px] text-[#004C46] dark:text-[#F5F3E7]'>
-                                                    {observation.taxon.preferred_common_name}
+                                                    {observation.taxon_name}
                                                 </p>
-                                                <p className='text-[14px] !mt-0 !mb-[12px]'>Observer: {observation.user.login}</p>
-                                                <p className='text-[14px] !m-0 !mb-[12px]'>Date: {observation.observed_on_details.date}</p>
-                                                <p className='text-[14px] !m-0 !mb-[12px]'>Verifiable: {observation.quality_grade}</p>
+                                                <p className='text-[14px] !mt-0 !mb-[12px]'>Observer: {observation.user.userName ?? ''}</p>
+                                                <p className='text-[14px] !m-0 !mb-[12px]'>Date: {observation.observedDate}</p>
+                                                <p className='text-[14px] !m-0 !mb-[12px]'>Verifiable: {observation.gradeType}</p>
 
                                             </div>
-                                            {observation.photos && observation.photos.length > 0 && (
+                                           
                                                 <img 
-                                                    src={observation.photos[0].url.replace('square', 'small')} 
+                                                    src={observation.images.small} 
                                                     alt="observation photo" 
                                                     className='inline-block w-[125px] h-[150px]' 
                                                 />
-                                            )}
+                        
                                         </div>
                                     </Popup>
                                 </Marker>
