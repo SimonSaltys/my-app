@@ -1,3 +1,12 @@
+/**
+ * @file /src/app/api/fetchFunctions.ts
+ * 
+ * @fileoverview Holds api fetch utility functions to be used in routes
+ * 
+ * @todo add more default values with nullish coalescing,
+ *  add in the constraint by date in api url 
+ */
+
 import { iNatApiResponse, iNatApiResult, iNatFetchObj, iNatLeaderUrl, iNatLeadingUser, iNatUrl, iNatUserObservation } from "./collections/inaturalist/route"
 import { DisplayOptions } from "../components/map/Map"
 import L, { LatLngLiteral } from 'leaflet'
@@ -11,6 +20,15 @@ export const basicFetch = async <ReturnType>(endpoint: string): Promise<ReturnTy
     return data
   };
 
+  /**
+   * Fetches all observations, images, top identifiers and observers 
+   * from the INaturalist api
+   * 
+   * @param specimenName the name of the specimen to get all the data for
+   * @param coordinate where in which to get the data
+   * @param searchOptions the options the user can select in the {@link DisplayOptions}
+   * @returns the {@link iNatApiResult} which contains all the relevant data
+   */
 export const fetchSpecimenObservations = async (specimenName: string, coordinate : LatLngLiteral, searchOptions: DisplayOptions): Promise<iNatApiResult> => {
     if (!specimenName || !searchOptions || !coordinate) return { observations: [], images: [], leadingUsers : {identifiers : [], observers : []} }
 
@@ -20,16 +38,17 @@ export const fetchSpecimenObservations = async (specimenName: string, coordinate
         searchOptions: searchOptions,
     }
 
+    //initial fetch logic 
     const endpoint = iNatUrl(fetchObj)
     
     const response : iNatApiResponse = await basicFetch<iNatApiResponse>(endpoint)
     
-
     if(!response) return { observations: [], images: [], leadingUsers : {identifiers : [], observers : []} }
 
-
+    //declaring return variables
     const observedSpecimenArray : iNatUserObservation[] = []
     const imageArray :  {original : string, thumbnail : string, small : string}[] = []
+
 
     for(let result of response.results) {
         if(!result.photos[0] || !result.geojson.coordinates)
@@ -38,6 +57,7 @@ export const fetchSpecimenObservations = async (specimenName: string, coordinate
         const image = result.photos[0]?.url.replace('square', 'large');
         const imageSmall = result.photos[0]?.url.replace('square', 'small');
 
+        //creating the main bulk of the data to be returned in the observedSpecimenArray
         const specimenInfo : iNatUserObservation  = {
             user : {
                 userName: result.user.login,
@@ -58,6 +78,7 @@ export const fetchSpecimenObservations = async (specimenName: string, coordinate
         imageArray.push(specimenInfo.images)
     }
 
+    //fetching the leaders
     const leadingUsers = await getLeadingUsers(fetchObj)
 
     return { 
@@ -67,14 +88,17 @@ export const fetchSpecimenObservations = async (specimenName: string, coordinate
                         observers : leadingUsers.observers} }
 }
 
-
+/**
+ * Helper function to get the top identifiers and observers of this specimen
+ * @param fetchObj the provided specimen and location
+ * @returns the top identifiers and observers
+ */
 const getLeadingUsers = async (fetchObj : iNatFetchObj): 
     Promise<{identifiers : iNatLeadingUser[], observers : iNatLeadingUser[]}> => {
 
     const endpointObservers = iNatLeaderUrl(fetchObj,'observers')
     const endpointIdentifiers = iNatLeaderUrl(fetchObj,'identifiers')
 
-    
     const responseObservers : iNatApiResponse = await basicFetch<iNatApiResponse>(endpointObservers)
     const responseIdentifiers : iNatApiResponse = await basicFetch<iNatApiResponse>(endpointIdentifiers)
 

@@ -1,3 +1,11 @@
+/**
+ * @file /src/app/api/collections/inaturalist/route.tsx
+ * 
+ * @fileoverview the route for getting all data for the {@link MapClientWrapper} component
+ * 
+ * @todo 
+ */
+
 import { DisplayOptions } from '@/app/components/map/Map';
 import { MapOptions } from '@/app/components/map/MapOptions';
 import { LatLngLiteral } from 'leaflet';
@@ -12,12 +20,14 @@ export interface iNatApiResponse {
     results: any[]
 }
 
+//The final result that the MapClientWrapper will use
 export interface iNatApiResult {
     observations : iNatUserObservation[] | []
     images : {original : string, thumbnail : string, small : string}[] | []
     leadingUsers : {identifiers : iNatLeadingUser[], observers : iNatLeadingUser[]}
 }
 
+//A single observation of the specified specimen by a user
 export interface iNatUserObservation {
     user : iNatUser
     observedDate : string
@@ -29,17 +39,20 @@ export interface iNatUserObservation {
     images : {original : string, thumbnail : string, small : string}
 }
 
+//Represents leading user of either identifier or observation
 export interface iNatLeadingUser {
     user : iNatUser
     count : number
 }
 
+//Represents a user on the inaturalist site 
 export interface iNatUser {
     userName : string
     userId : number
     userIcon: string
 }
 
+//The initial search query that will be sent to the inat api
 export interface iNatFetchObj {
     specimenName: string
     coordinate : LatLngLiteral  

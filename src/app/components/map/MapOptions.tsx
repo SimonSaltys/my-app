@@ -1,3 +1,11 @@
+/**
+ * @file /src/app/components/map/MapOptions.tsx
+ * 
+ * @fileoverview Drop down menu for different search parameters on the map
+ * 
+ * @todo work on the use my location to use the users current location as a base search
+ */
+
 "use client"
 import { DisplayOptions } from "./Map"
 import { Dispatch, SetStateAction, useState } from "react"
@@ -74,6 +82,15 @@ export function MapOptions(props : {displayOptions : DisplayOptions, setDisplayO
             />
 
             <label htmlFor="date-after" className="block text-gray-700 mb-2">Since date</label>
+        </div>
+
+        <div className="mb-4">
+            <input 
+                id="use-my-location"
+                type="checkbox" 
+                className="mt-1 border border-gray-300 rounded-md p-2"
+            />
+             <label htmlFor="use-my-location" className=" text-gray-700 mb-2 pl-2">Use My Location</label>
         </div>
 
         <div className="mb-4">

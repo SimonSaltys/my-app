@@ -3,7 +3,7 @@
  * 
  * @fileoverview Holds the header, map, image gallery, and footer
  * 
- * @todo make sure mr-2 goes away after sizing back to large
+ * @todo 
  */
 
 "use client"
