@@ -8,7 +8,7 @@
 
 "use client"
 import { DisplayOptions } from "./Map"
-import { Dispatch, SetStateAction, useState } from "react"
+import { Dispatch, SetStateAction, useState, useEffect } from "react"
 
 export function MapOptions(props : {displayOptions : DisplayOptions, setDisplayOptions : Dispatch<SetStateAction<DisplayOptions>> }) {
     const displayOptions = props.displayOptions;
@@ -17,6 +17,7 @@ export function MapOptions(props : {displayOptions : DisplayOptions, setDisplayO
     const [beforeDate, setBeforeDate] = useState<Date | undefined>(displayOptions.beforeDate);  
     const [sinceDate, setSinceDate] = useState<Date | undefined>(displayOptions.sinceDate);
     const [gradeType, setGradeType] = useState<string>(displayOptions.gradeType);
+    const[useCurrentLocation, setUseCurrentLocation] = useState<boolean>(displayOptions.useCurrentLocation);
 
     const handleSubmit = (event : React.FormEvent) => {
         event.preventDefault()
@@ -26,8 +27,11 @@ export function MapOptions(props : {displayOptions : DisplayOptions, setDisplayO
             beforeDate,
             sinceDate,
             gradeType,
+            useCurrentLocation
         });
+        
     }
+    
 
     return (
     <>
@@ -62,7 +66,7 @@ export function MapOptions(props : {displayOptions : DisplayOptions, setDisplayO
 
         <div className="mb-4">
             <input
-                id="after-date"
+                id="date-before"
                 type="date"
                 value={beforeDate ? beforeDate.toISOString().split('T')[0] : ''}
                 onChange={(e) => setBeforeDate(e.target.value ? new Date(e.target.value) : undefined)}
@@ -81,13 +85,18 @@ export function MapOptions(props : {displayOptions : DisplayOptions, setDisplayO
                 className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-300"
             />
 
-            <label htmlFor="date-after" className="block text-gray-700 mb-2">Since date</label>
+            <label htmlFor="date-since" className="block text-gray-700 mb-2">Since date</label>
         </div>
 
         <div className="mb-4">
             <input 
                 id="use-my-location"
                 type="checkbox" 
+                checked={useCurrentLocation} 
+                onChange={() => {
+                    const newValue = !useCurrentLocation;
+                    setUseCurrentLocation(newValue);
+                }}
                 className="mt-1 border border-gray-300 rounded-md p-2"
             />
              <label htmlFor="use-my-location" className=" text-gray-700 mb-2 pl-2">Use My Location</label>

@@ -62,22 +62,52 @@ export interface iNatFetchObj {
 export const iNatUrl = (fetchObj: iNatFetchObj): string => {
     const { specimenName, coordinate, searchOptions } = fetchObj;
 
-    return `https://api.inaturalist.org/v1/observations?taxon_name=${encodeURIComponent(specimenName)}
-        &lat=${coordinate.lat}
-        &lng=${coordinate.lng}
-        &radius=${searchOptions.radius}
-        &quality_grade=${searchOptions.gradeType}`
+    // Create a URLSearchParams object
+    const params = new URLSearchParams();
+    params.set("taxon_name", encodeURIComponent(specimenName));
+    params.set("lat", coordinate.lat.toString());
+    params.set("lng", coordinate.lng.toString());
+    params.set("radius", searchOptions.radius.toString());
+    params.set("quality_grade", searchOptions.gradeType);
+
+    // Only add 'd1' if it exists and is a valid date
+    if (searchOptions.sinceDate) {
+        params.set("d1", searchOptions.sinceDate.toISOString());
+    }
+
+    // Only add 'd2' if it exists and is a valid date
+    if (searchOptions.beforeDate) {
+        params.set("d2", searchOptions.beforeDate.toISOString());
+    }
+
+    // Return the full URL with the query parameters
+    return `https://api.inaturalist.org/v1/observations?${params.toString()}`;
 };
 
-export const iNatLeaderUrl = (fetchObj: iNatFetchObj, type : string): string => {
+export const iNatLeaderUrl = (fetchObj: iNatFetchObj, type: string): string => {
     const { specimenName, coordinate, searchOptions } = fetchObj;
 
-   return `https://api.inaturalist.org/v1/observations/${type}?taxon_name=${encodeURIComponent(specimenName)}
-        &lat=${coordinate.lat}
-        &lng=${coordinate.lng}
-        &radius=${searchOptions.radius}
-        &quality_grade=${searchOptions.gradeType}`
-}
+    // Create a URLSearchParams object
+    const params = new URLSearchParams();
+    params.set("taxon_name", encodeURIComponent(specimenName));
+    params.set("lat", coordinate.lat.toString());
+    params.set("lng", coordinate.lng.toString());
+    params.set("radius", searchOptions.radius.toString());
+    params.set("quality_grade", searchOptions.gradeType);
+
+    // Only add 'd1' if it exists and is a valid date
+    if (searchOptions.sinceDate) {
+        params.set("d1", searchOptions.sinceDate.toISOString());
+    }
+
+    // Only add 'd2' if it exists and is a valid date
+    if (searchOptions.beforeDate) {
+        params.set("d2", searchOptions.beforeDate.toISOString());
+    }
+
+    // Return the full URL with the query parameters
+    return `https://api.inaturalist.org/v1/observations/${type}?${params.toString()}`;
+};
 
 export async function POST(request: Request) {
     
@@ -91,7 +121,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Invalid input" }, { status: 400 });
     
         const observations = await fetchSpecimenObservations(specimenName, coordinate, searchOptions);
-    
+
         return NextResponse.json(observations, { status: 200 });
 
     } catch (error) {

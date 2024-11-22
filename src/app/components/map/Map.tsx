@@ -1,10 +1,11 @@
 "use client"
 import 'leaflet/dist/leaflet.css'
 import { MapContainer, TileLayer, Marker, Popup, Circle, useMapEvents } from 'react-leaflet'
-import { useState , Dispatch, SetStateAction} from "react"
+import { useState , Dispatch, SetStateAction, useEffect} from "react"
 import { MapOptions } from '@/app/components/map/MapOptions'
 import L, { LatLngLiteral } from 'leaflet'
 import { iNatUserObservation } from '@/app/api/collections/inaturalist/route'
+import RecenterMap from './RecenterMap'
 
 export interface SearchValues {
     specimenName : string | undefined
@@ -17,16 +18,17 @@ export interface DisplayOptions {
     beforeDate: Date | undefined; 
     sinceDate: Date | undefined; 
     gradeType : string
+    useCurrentLocation : boolean
 }
 
 export interface MapProps {
     activeSpecies : string | undefined
     position : LatLngLiteral
-    userCoordinates: LatLngLiteral | undefined 
-    setUserCoordinates: Dispatch<SetStateAction<LatLngLiteral | undefined>> 
+    setCoordinates: Dispatch<SetStateAction<LatLngLiteral | undefined>> 
     observations: iNatUserObservation[]
     setDisplayOptions : Dispatch<SetStateAction<DisplayOptions>>
     displayOptions : DisplayOptions 
+    setLoading : Dispatch<SetStateAction<boolean>> 
 }
 
 export default function Map(props: MapProps) {
@@ -64,7 +66,7 @@ export default function Map(props: MapProps) {
     const LocationFinder = () => {
         const map = useMapEvents({
             click(e) {
-                props.setUserCoordinates({ lat: e.latlng.lat, lng: e.latlng.lng });
+                props.setCoordinates({ lat: e.latlng.lat, lng: e.latlng.lng });
             },
         })
 
@@ -76,6 +78,12 @@ export default function Map(props: MapProps) {
     const toggleMapOptions = () => {
         setShowMapOptions((prev) => !prev)
     };
+
+    //hide the forum on submit
+    useEffect(() => {
+        setShowMapOptions(false)
+        
+    }, [props.displayOptions]);
 
    return (
         <div className="relative h-full w-full">
@@ -96,8 +104,9 @@ export default function Map(props: MapProps) {
             </div>
         }
 
-        <MapContainer className="z-0 rounded-xl h-full w-full" center={[props.position.lat, props.position.lng]} zoom={3} scrollWheelZoom={false}>
+        <MapContainer className="z-0 rounded-xl h-full w-full" center={[props.position.lat, props.position.lng]} zoom={7} scrollWheelZoom={false}>
             <LocationFinder />
+            <RecenterMap position={props.position}/>
             <TileLayer
                 attribution={attribution}
                 url={tiles}

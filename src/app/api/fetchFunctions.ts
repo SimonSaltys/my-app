@@ -40,7 +40,7 @@ export const fetchSpecimenObservations = async (specimenName: string, coordinate
 
     //initial fetch logic 
     const endpoint = iNatUrl(fetchObj)
-    
+
     const response : iNatApiResponse = await basicFetch<iNatApiResponse>(endpoint)
     
     if(!response) return { observations: [], images: [], leadingUsers : {identifiers : [], observers : []} }
