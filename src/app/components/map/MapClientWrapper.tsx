@@ -76,7 +76,6 @@ export default function MapClientWrapper() {
         setObserverIcon(observation.user.userIcon ?? 'img/blankIcon.jpg')
     }
     
-
     useEffect(() => {
         setLoading(true)
         if (displayOptions.useCurrentLocation) {

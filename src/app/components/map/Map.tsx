@@ -100,6 +100,7 @@ export default function Map(props: MapProps) {
                 <MapOptions 
                     setDisplayOptions={props.setDisplayOptions}
                     displayOptions={props.displayOptions}
+                    setLoading={props.setLoading}
                 />
             </div>
         }

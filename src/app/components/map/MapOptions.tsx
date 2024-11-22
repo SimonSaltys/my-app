@@ -8,9 +8,12 @@
 
 "use client"
 import { DisplayOptions } from "./Map"
-import { Dispatch, SetStateAction, useState, useEffect } from "react"
+import { Dispatch, SetStateAction, useState } from "react"
 
-export function MapOptions(props : {displayOptions : DisplayOptions, setDisplayOptions : Dispatch<SetStateAction<DisplayOptions>> }) {
+export function MapOptions(props : {displayOptions : DisplayOptions, 
+    setDisplayOptions : Dispatch<SetStateAction<DisplayOptions>>,
+    setLoading : Dispatch<SetStateAction<boolean>>  }) {
+
     const displayOptions = props.displayOptions;
     const [radius, setRadius] = useState<number>(displayOptions.radius);
     const [displayAmount, setDisplayAmount] = useState<number>(displayOptions.displayAmount);
@@ -29,7 +32,10 @@ export function MapOptions(props : {displayOptions : DisplayOptions, setDisplayO
             gradeType,
             useCurrentLocation
         });
-        
+
+        //todo | probably not needed (there is a bug where sometimes the 
+        //todo | loading does not show up when hitting submit when the checkbox is checked)
+        props.setLoading(true)
     }
     
 
