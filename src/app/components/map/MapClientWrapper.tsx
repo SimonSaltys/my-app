@@ -21,6 +21,7 @@ import { DisplayOptions } from "./Map"
 import { MapNavbar } from "@/app/components/map/navitems/MapNavbar"
 import { Footer } from "@/app/components/Footer"
 import { LeaderBoard }  from "@/app/components/map/LeaderBoard"
+import { defaultCoordinates, fetchCoordinates } from"@/app/functions/MapFunctions"
 
 //dynamic imports
 import dynamic from 'next/dynamic'
@@ -36,10 +37,9 @@ const DynamicMap = dynamic(() => import('./Map'), {
  * @returns {JSX.Element} A JSX element representing the MapClientWrapper component.
  */
 export default function MapClientWrapper() {
-    const defaultCoordinates: LatLngLiteral = { lat: 39.35, lng: -120.26 }
 
     const [searchedValue, setSearchedValue] = useState<SearchValues>({
-                                                specimenName: "Sunflower", 
+                                                specimenName: "Poppy", 
                                                 taxonId: -1 
                                                 })
      const [displayOptions,setDisplayOptions] = useState<DisplayOptions>({
@@ -76,33 +76,12 @@ export default function MapClientWrapper() {
         setObserverIcon(observation.user.userIcon ?? 'img/blankIcon.jpg')
     }
     
-    useEffect(() => {
-        setLoading(true)
-        if (displayOptions.useCurrentLocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                const { latitude, longitude } = position.coords;
-                if (
-                    !coordinates ||
-                    coordinates.lat !== latitude ||
-                    coordinates.lng !== longitude
-                ) {
-                    setCoordinates({ lat: latitude, lng: longitude });
-                }
 
-                setDisplayOptions({
-                    ...displayOptions,
-                    useCurrentLocation: false
-                })
-                
-            });
-        } else {
-            setCoordinates(coordinates || defaultCoordinates);
-        }
-    }, [displayOptions.useCurrentLocation, coordinates]);
+    useEffect(() => { fetchCoordinates
+         iNatFetch()
+    }, [displayOptions, coordinates]); 
     
-    
-    useEffect(() => {
-        const iNatFetch = async () => {
+    const iNatFetch = async () => {
             const iNatFetchObj : iNatFetchObj = {
                 specimenName: searchedValue.specimenName ?? '',
                 coordinate: coordinates ?? defaultCoordinates,
@@ -118,8 +97,6 @@ export default function MapClientWrapper() {
                 },
                 body: JSON.stringify(iNatFetchObj) 
             })
-
-            
 
             if (res.ok) {
                 const json : iNatApiResult = await res.json()
@@ -138,10 +115,7 @@ export default function MapClientWrapper() {
                 console.error("Error fetching iNaturalist data:", res.text)
             }
         }
-        iNatFetch()
-    }, [searchedValue,coordinates, displayOptions])
- 
- 
+
     return (
         <>
         

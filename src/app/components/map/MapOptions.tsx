@@ -32,10 +32,6 @@ export function MapOptions(props : {displayOptions : DisplayOptions,
             gradeType,
             useCurrentLocation
         });
-
-        //todo | probably not needed (there is a bug where sometimes the 
-        //todo | loading does not show up when hitting submit when the checkbox is checked)
-        props.setLoading(true)
     }
     
 
