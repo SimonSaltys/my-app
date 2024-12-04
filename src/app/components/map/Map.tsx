@@ -24,7 +24,7 @@ export interface DisplayOptions {
 export interface MapProps {
     activeSpecies : string | undefined
     position : LatLngLiteral
-    setCoordinates: Dispatch<SetStateAction<LatLngLiteral | undefined>> 
+    setCoordinates: Dispatch<SetStateAction<LatLngLiteral>> 
     observations: iNatUserObservation[]
     setDisplayOptions : Dispatch<SetStateAction<DisplayOptions>>
     displayOptions : DisplayOptions 

@@ -7,26 +7,25 @@
  */
 
 "use client"
-
-//default imports
+//library imports
 import "react-image-gallery/styles/css/image-gallery.css"
 import ImageGallery from 'react-image-gallery'
 import { ReactImageGalleryItem } from "react-image-gallery"
 import { useState, useEffect } from "react"
 import { LatLngLiteral } from "leaflet"
+import { GridLoader } from "react-spinners"
 
-//custom imports
+//my own imports
 import { SearchValues } from "./Map"
 import { DisplayOptions } from "./Map"
 import { MapNavbar } from "@/app/components/map/navitems/MapNavbar"
 import { Footer } from "@/app/components/Footer"
 import { LeaderBoard }  from "@/app/components/map/LeaderBoard"
-import { defaultCoordinates, fetchCoordinates } from"@/app/functions/MapFunctions"
+import { defaultCoordinates, fetchCoordinates, iNatFetch, setCredentials, CredentialsParams, iNatFetchParams, fetchCoordinatesParams } from"@/app/functions/MapFunctions"
+import { iNatLeadingUser, iNatUserObservation } from "@/app/api/collections/inaturalist/route"
 
 //dynamic imports
 import dynamic from 'next/dynamic'
-import { iNatApiResult, iNatFetchObj, iNatLeadingUser, iNatUserObservation } from "@/app/api/collections/inaturalist/route"
-import { GridLoader } from "react-spinners"
 const DynamicMap = dynamic(() => import('./Map'), {
     ssr: false 
 })
@@ -38,6 +37,8 @@ const DynamicMap = dynamic(() => import('./Map'), {
  */
 export default function MapClientWrapper() {
 
+    //default values
+    //todo remove searched value when integrating to the main repo
     const [searchedValue, setSearchedValue] = useState<SearchValues>({
                                                 specimenName: "Poppy", 
                                                 taxonId: -1 
@@ -50,7 +51,8 @@ export default function MapClientWrapper() {
         gradeType : "needs_id,research,casual",
         useCurrentLocation : false })
 
-    const [coordinates, setCoordinates] = useState<LatLngLiteral>()
+    //misc states 
+    const [coordinates, setCoordinates] = useState<LatLngLiteral>(defaultCoordinates)
     const [activeSection, setActiveSection] = useState<string>("images")
     const [loading, setLoading] = useState<boolean>(false)
 
@@ -60,62 +62,55 @@ export default function MapClientWrapper() {
     const [topObservers, setTopObservers] = useState<iNatLeadingUser[]>([])
     const [topIdentifiers, setTopIdentifiers] = useState<iNatLeadingUser[]>([])
 
-    //credentials 
-    const [observer, setObserver] = useState<string>()
-    const [observationTitle, setObservationTitle] = useState<string>()
-    const [observationLocation, setObservationLocation] = useState<string>()
-    const [observationDate, setObservationDate] = useState<string>()
-    const [observerIcon, setObserverIcon] = useState<string>()
+    //credentials
+    const [observer, setObserver] = useState<string>(" ")
+    const [observationTitle, setObservationTitle] = useState<string>(" ")
+    const [observationLocation, setObservationLocation] = useState<string>(" ")
+    const [observationDate, setObservationDate] = useState<string>(" ")
+    const [observerIcon, setObserverIcon] = useState<string>(" ")
 
-    const setCredentials = (index: number) => {
-        const observation = observations[index]
-        setObserver(observation.user.userName)
-        setObservationTitle(observation.species_guess)
-        setObservationDate(observation.observedDate)
-        setObservationLocation(observation.place_guess)
-        setObserverIcon(observation.user.userIcon ?? 'img/blankIcon.jpg')
+    //params for fetching coordinates 
+    const fetchCoordinatesParams : fetchCoordinatesParams = {
+        coordinates,
+        displayOptions,
+        setDisplayOptions,
+        setCoordinates
     }
-    
 
-    useEffect(() => { fetchCoordinates
-         iNatFetch()
+    //params for setting credentials 
+    const credentialParams : CredentialsParams = {
+        observations,
+        setObserver,
+        setObservationTitle,
+        setObservationDate,
+        setObservationLocation,
+        setObserverIcon
+    }
+
+    //params for fetching data from the iNat API
+    const iNatFetchParams : iNatFetchParams = {
+        searchedValue,
+        coordinates,
+        displayOptions,
+        setLoading,
+        setObservations,
+        setImages,
+        setTopIdentifiers,
+        setTopObservers
+    }
+
+    /*
+        every time the user updates the graph by moving around or changing parameters
+        we want to update the graph with the new data
+    */
+    useEffect(() => { 
+
+        fetchCoordinates(fetchCoordinatesParams)
+        iNatFetch(iNatFetchParams)
+
     }, [displayOptions, coordinates]); 
     
-    const iNatFetch = async () => {
-            const iNatFetchObj : iNatFetchObj = {
-                specimenName: searchedValue.specimenName ?? '',
-                coordinate: coordinates ?? defaultCoordinates,
-                searchOptions : displayOptions
-            }
-
-            setLoading(true)
-
-            const res = await fetch('api/collections/inaturalist', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',  
-                },
-                body: JSON.stringify(iNatFetchObj) 
-            })
-
-            if (res.ok) {
-                const json : iNatApiResult = await res.json()
-                console.log(json);
-            
-                setObservations(json.observations)
-
-                setImages(json.images)
-
-                setTopIdentifiers(json.leadingUsers.identifiers)
-            
-                setTopObservers(json.leadingUsers.observers)
-
-                setLoading(false)
-            } else {
-                console.error("Error fetching iNaturalist data:", res.text)
-            }
-        }
-
+   
     return (
         <>
         
@@ -137,7 +132,6 @@ export default function MapClientWrapper() {
                             displayOptions={displayOptions}
                             setDisplayOptions={setDisplayOptions}
                             setLoading={setLoading}
-                        
                 />
                     )}
             </section>
@@ -148,8 +142,8 @@ export default function MapClientWrapper() {
                         <p className='flex w-full h-[10%] justify-center items-center text-2xl'>{(observationTitle as string)}</p>
                         <div className='w-3/5 h-[70%] lg:h-[60%] lg:w-4/5'>
                             <ImageGallery autoPlay items={images as ReactImageGalleryItem[]} slideInterval={4000} 
-                                onSlide={(currentIndex) => setCredentials(currentIndex) } 
-                                onPlay={(currentIndex) => setCredentials(currentIndex)}/>
+                                onSlide={(currentIndex) => setCredentials(currentIndex, credentialParams) } 
+                                onPlay={(currentIndex) => setCredentials(currentIndex, credentialParams)}/>
                         </div>
                         <div className="flex flex-col items-center justify-center h-[160px] w-full">
                             <div id='observationCredentials' className='flex flex-col h-[20%] xl:h-[30%] w-4/5 text-center items-center justify-center text-base xl:text-lg'>
