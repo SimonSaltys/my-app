@@ -8,13 +8,14 @@
 
 "use client"
 import { DisplayOptions } from "./Map"
-import { Dispatch, SetStateAction, useState } from "react"
+import { Dispatch, SetStateAction, useContext, useState } from "react"
+import { MapContext, MapContextData } from "./MapClientWrapper";
 
-export function MapOptions(props : {displayOptions : DisplayOptions, 
-    setDisplayOptions : Dispatch<SetStateAction<DisplayOptions>>,
-    setLoading : Dispatch<SetStateAction<boolean>>  }) {
+export function MapOptions() {
+    const context = useContext(MapContext) as MapContextData
+    const data = context.state
 
-    const displayOptions = props.displayOptions;
+    const displayOptions = data.displayOptions;
     const [radius, setRadius] = useState<number>(displayOptions.radius);
     const [displayAmount, setDisplayAmount] = useState<number>(displayOptions.displayAmount);
     const [beforeDate, setBeforeDate] = useState<Date | undefined>(displayOptions.beforeDate);  
@@ -24,14 +25,18 @@ export function MapOptions(props : {displayOptions : DisplayOptions,
 
     const handleSubmit = (event : React.FormEvent) => {
         event.preventDefault()
-        props.setDisplayOptions({
-            radius,
-            displayAmount,
-            beforeDate,
-            sinceDate,
-            gradeType,
-            useCurrentLocation
-        });
+
+        context.dispatch({
+            type:"SET_DISPLAY_OPTIONS",
+            payload: {
+                radius,
+                displayAmount,
+                beforeDate,
+                sinceDate,
+                gradeType,
+                useCurrentLocation
+            }
+        })
     }
     
 

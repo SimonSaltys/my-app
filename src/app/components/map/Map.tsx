@@ -1,11 +1,12 @@
 "use client"
 import 'leaflet/dist/leaflet.css'
 import { MapContainer, TileLayer, Marker, Popup, Circle, useMapEvents } from 'react-leaflet'
-import { useState , Dispatch, SetStateAction, useEffect} from "react"
+import { useState,useEffect, useContext} from "react"
 import { MapOptions } from '@/app/components/map/MapOptions'
-import L, { LatLngLiteral } from 'leaflet'
-import { iNatUserObservation } from '@/app/api/collections/inaturalist/route'
+import L from 'leaflet'
 import RecenterMap from './RecenterMap'
+import { MapContext, MapContextData } from './MapClientWrapper'
+
 
 export interface SearchValues {
     specimenName : string | undefined
@@ -20,27 +21,19 @@ export interface DisplayOptions {
     gradeType : string
     useCurrentLocation : boolean
 }
-
-export interface MapProps {
-    activeSpecies : string | undefined
-    position : LatLngLiteral
-    setCoordinates: Dispatch<SetStateAction<LatLngLiteral>> 
-    observations: iNatUserObservation[]
-    setDisplayOptions : Dispatch<SetStateAction<DisplayOptions>>
-    displayOptions : DisplayOptions 
-    setLoading : Dispatch<SetStateAction<boolean>> 
-}
-
-export default function Map(props: MapProps) {
+export default function Map() {
 
     const [showMapOptions, setShowMapOptions] = useState<boolean>(false)
+    const context = useContext(MapContext) as MapContextData
+    const dispatch = context.dispatch;
+    const data = context.state;
 
     const lightModeTiles: string = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png'
     const darkModeTiles: string = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
     const prefersDarkMode: boolean = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
     const openAttribution: string = '&copy; https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
     const esriAttribution: string = "Powered by <a href='https://www.esri.com/en-us/home' rel='noopener noreferrer'>Esri</a>"
-    const iNatTileUrl: string = 'https://api.inaturalist.org/v1/points/{z}/{x}/{y}.png?photos=true&taxon_name=' + props.activeSpecies
+    const iNatTileUrl: string = 'https://api.inaturalist.org/v1/points/{z}/{x}/{y}.png?photos=true&taxon_name=' + data.searchedValue.specimenName
 
     let tiles = !prefersDarkMode ? lightModeTiles : darkModeTiles
     let attribution = !prefersDarkMode ? openAttribution : esriAttribution
@@ -66,12 +59,15 @@ export default function Map(props: MapProps) {
     const LocationFinder = () => {
         const map = useMapEvents({
             click(e) {
-                props.setCoordinates({ lat: e.latlng.lat, lng: e.latlng.lng });
+                dispatch({
+                    type: "SET_COORDINATES",
+                    payload: { lat: e.latlng.lat, lng: e.latlng.lng }
+                })
             },
         })
 
-        return props.position === null ? null : (
-            <Marker position={props.position} icon={centerIcon} />
+        return  data.coordinates === null ? null : (
+            <Marker position={data.coordinates} icon={centerIcon} />
         )
     }
 
@@ -83,7 +79,7 @@ export default function Map(props: MapProps) {
     useEffect(() => {
         setShowMapOptions(false)
         
-    }, [props.displayOptions]);
+    }, [context.state.displayOptions]);
 
    return (
         <div className="relative h-full w-full">
@@ -98,16 +94,13 @@ export default function Map(props: MapProps) {
         {showMapOptions && 
             <div className="absolute top-16 right-4 z-50 bg-white shadow-md p-4 rounded">
                 <MapOptions 
-                    setDisplayOptions={props.setDisplayOptions}
-                    displayOptions={props.displayOptions}
-                    setLoading={props.setLoading}
                 />
             </div>
         }
 
-        <MapContainer className="z-0 rounded-xl h-full w-full" center={[props.position.lat, props.position.lng]} zoom={7} scrollWheelZoom={false}>
+        <MapContainer className="z-0 rounded-xl h-full w-full" center={[data.coordinates.lat, data.coordinates.lng]} zoom={7} scrollWheelZoom={false}>
             <LocationFinder />
-            <RecenterMap position={props.position}/>
+            <RecenterMap position={data.coordinates}/>
             <TileLayer
                 attribution={attribution}
                 url={tiles}
@@ -115,18 +108,18 @@ export default function Map(props: MapProps) {
             <TileLayer
                 url={iNatTileUrl}
             />
-            {props.position && (
+            {data.coordinates && (
                 <Circle
-                    center={props.position}
-                    radius={props.displayOptions.radius * 1000}
+                    center={data.coordinates}
+                    radius={data.displayOptions.radius * 1000}
                     pathOptions={{ color: '#004C46', fillColor: '#004C46' }}
                 />
             )}
 
-            {props.observations.length > 0 && (
+            {data.observations.length > 0 && (
                 <>
-                    {props.observations.map((observation, index) => {
-                        if (index < props.displayOptions.displayAmount) {
+                    {data.observations.map((observation, index) => {
+                        if (index < data.displayOptions.displayAmount) {
                             return (
                                 <Marker 
                                     key={index} 

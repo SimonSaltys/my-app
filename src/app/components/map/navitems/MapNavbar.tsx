@@ -8,19 +8,21 @@
 "use client"
 
 //default imports
-import { Dispatch, SetStateAction } from "react";
-import { Navbar, Button } from "flowbite-react";
+import { useContext } from "react";
+import { Navbar } from "flowbite-react";
 import { NavButton } from "./NavButton";
+import { MapContext, MapContextData } from "../MapClientWrapper";
 
-interface MapNavbarProps {
-    setActiveSection : Dispatch<SetStateAction<string>> 
-    activeSelection : string
-  }
 
-export function MapNavbar({ setActiveSection, activeSelection } : MapNavbarProps) {
+
+export function MapNavbar() {
+    const context = useContext(MapContext) as MapContextData
 
     const handleClick = (section : string) => {
-            setActiveSection(section)
+            context.dispatch({
+                type:"SET_ACTIVE_SECTION",
+                payload: section
+            })
     }
 
 

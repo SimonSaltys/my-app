@@ -7,9 +7,10 @@
  */
 
 import { LatLngLiteral } from "leaflet";
-import { Dispatch, SetStateAction } from "react"
-import { iNatApiResult, iNatFetchObj, iNatLeadingUser, iNatUserObservation } from "@/app/api/collections/inaturalist/route"
-import { DisplayOptions, SearchValues } from "../components/map/Map";
+import { iNatApiResult, iNatFetchObj} from "@/app/api/collections/inaturalist/route"
+import { MapDataAction, MapDataState } from "../reducers/MapDataReducer";
+import { Dispatch } from "react";
+
 
 //When the map first loads it will load here, If there is an error it will also load back to here
 export const defaultCoordinates: LatLngLiteral = { lat: 39.35, lng: -120.26 }
@@ -40,27 +41,34 @@ const getCoords = async () => {
  * This function either fetches the user's current location using the Geolocation API 
  * (if the user has opted to use their current location) or sets the location to a provided set of coordinates.
  * 
- * @param {LatLngLiteral} coordinates - The fallback or explicitly set coordinates.
- * @param {DisplayOptions} displayOptions - The current display options, including the `useCurrentLocation` flag.
- * @param {Dispatch<SetStateAction<DisplayOptions>>} setDisplayOptions - Function to update the display options state.
- * @param {Dispatch<SetStateAction<LatLngLiteral>>} setCoordinates - Function to update the coordinates state.
  */
 export const fetchCoordinates = async (
-    params : fetchCoordinatesParams
+    state : MapDataState, 
+    dispatch : Dispatch<MapDataAction>
+    
     ) => {
         
-    if (params.displayOptions.useCurrentLocation) {
+    if (state.displayOptions.useCurrentLocation) {
         const coords = await getCoords()
 
-        if (!params.coordinates || params.coordinates.lat !== coords.latitude || params.coordinates.lng !== coords.longitude) {
-            params.setCoordinates({ lat: coords.latitude, lng: coords.longitude })
+        if (!state.coordinates || state.coordinates.lat !== coords.latitude || state.coordinates.lng !== coords.longitude) {
+           dispatch({ 
+            type: "SET_COORDINATES",
+            payload: {
+                lat: coords.latitude, 
+                lng: coords.longitude }})
         }
-            params.setDisplayOptions({
-            ...params.displayOptions,
-            useCurrentLocation: false,
-         })
+            dispatch({
+                type: "SET_DISPLAY_OPTIONS",
+                payload: {
+                    ...state.displayOptions,
+                    useCurrentLocation: false}
+                 })
     } else {
-        params.setCoordinates(params.coordinates || defaultCoordinates)
+        dispatch({ 
+            type: "SET_COORDINATES",
+            payload: state.coordinates || defaultCoordinates,
+        })
     }
 }
 
@@ -71,16 +79,20 @@ export const fetchCoordinates = async (
  * It updates the corresponding states with the data returned from the API or logs an error if the request fails.
  */
 export const iNatFetch = async (
-   params : iNatFetchParams
+    state : MapDataState, 
+    dispatch : Dispatch<MapDataAction>
 
 ) => {
     const iNatFetchObj : iNatFetchObj = {
-        specimenName: params.searchedValue.specimenName ?? '',
-        coordinate: params.coordinates ?? defaultCoordinates,
-        searchOptions : params.displayOptions
+        specimenName: state.searchedValue.specimenName ?? '',
+        coordinate: state.coordinates ?? defaultCoordinates,
+        searchOptions : state.displayOptions
     }
 
-    params.setLoading(true)
+    dispatch({
+        type: "SET_LOADING",
+        payload: true
+    })
 
     const res = await fetch('api/collections/inaturalist', {
         method: 'POST',
@@ -93,16 +105,17 @@ export const iNatFetch = async (
     if (res.ok) {
         const json : iNatApiResult = await res.json()
         console.log(json);
-    
-        params.setObservations(json.observations)
 
-        params.setImages(json.images)
-
-        params.setTopIdentifiers(json.leadingUsers.identifiers)
-    
-        params.setTopObservers(json.leadingUsers.observers)
-
-        params.setLoading(false)
+        dispatch({
+            type: "SET_API_FETCH",
+            payload: {
+                observations : json.observations,
+                images : json.images,
+                topIdentifiers : json.leadingUsers.identifiers,
+                topObservers : json.leadingUsers.observers,
+                loading : false
+            }
+        })
     } else {
         console.error("Error fetching iNaturalist data:", res.text)
     }
@@ -116,74 +129,22 @@ export const iNatFetch = async (
  * @param {number} index the index at what observation we want to set the credentials 
  * @param {iNatUserObservation[]} observations 
  */
-export const setCredentials = (index: number,
+export const setCredentials = (
+    index: number,
+    state : MapDataState, 
+    dispatch : Dispatch<MapDataAction>
 
-    params : CredentialsParams
 ) => {
-    const observation = params.observations[index]
-    params.setObserver(observation.user.userName)
-    params.setObservationTitle(observation.species_guess)
-    params.setObservationDate(observation.observedDate)
-    params.setObservationLocation(observation.place_guess)
-    params.setObserverIcon(observation.user.userIcon ?? 'img/blankIcon.jpg')
-}
+    const observation = state.observations[index]
 
-/**
- * Parameters for fetching coordinates of the user, 
- * either where they have clicked or their current location
- * 
- * @param coordinates - The current location of where the map is displaying data
- * @param displayOptions - Options controlling the display of results (only using value `displayOptions.useCurrentLocation`)
- * @param setDisplayOptions
- * @param setCoordinates 
- */
-export interface fetchCoordinatesParams {
-    coordinates : LatLngLiteral,
-    displayOptions : DisplayOptions,
-    setDisplayOptions: Dispatch<SetStateAction<DisplayOptions>>,
-    setCoordinates: Dispatch<SetStateAction<LatLngLiteral>>
-}
-
-
-/**
- * Parameters for setting the credentials for the currently active observation 
- * in the image gallery
- * 
- * @param observations - The list of currently displaying observations
- * @param observer - The user name of the observer
- * @param observationTitle - What the user named their observation
- * @param observationLocation - The location where the user made their observation
- * @param observationIcon - The users icon on the inat site
- */
-export interface CredentialsParams {
-    observations : iNatUserObservation[],
-    setObserver : Dispatch<SetStateAction<string>>,
-    setObservationTitle : Dispatch<SetStateAction<string>>,
-    setObservationDate : Dispatch<SetStateAction<string>>,
-    setObservationLocation : Dispatch<SetStateAction<string>>,
-    setObserverIcon : Dispatch<SetStateAction<string>>
- }
-
-/**
- * Parameters for fetching data from the iNat API
- * 
- * @param  searchedValue - The search parameters, including the name of the specimen to be searched.
- * @param  coordinates - Latitude and longitude representing the search area.
- * @param  displayOptions - Options controlling the display of results (e.g., sorting, filters).
- * @param  setLoading
- * @param  setObservations 
- * @param  setImages 
- * @param  setTopIdentifiers
- * @param  setTopObservers 
- */
-export interface iNatFetchParams {
-    searchedValue : SearchValues,
-    coordinates : LatLngLiteral,
-    displayOptions : DisplayOptions,
-
-    setLoading : Dispatch<SetStateAction<boolean>>,
-    setObservations : Dispatch<SetStateAction<iNatUserObservation[]>>,
-    setImages : Dispatch<SetStateAction<any[]>>,
-    setTopIdentifiers : Dispatch<SetStateAction<iNatLeadingUser[]>>,
-    setTopObservers : Dispatch<SetStateAction<iNatLeadingUser[]>>
+    dispatch({
+        type:"SET_CREDENTIALS",
+        payload: {
+            observer : observation.user.userName,
+            observationTitle : observation.species_guess,
+            observationDate : observation.observedDate,
+            observationLocation : observation.place_guess,
+            observationIcon : observation.user.userIcon
+        }
+    })
 }
