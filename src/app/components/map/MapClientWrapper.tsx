@@ -9,8 +9,6 @@
 "use client"
 //library imports
 import "react-image-gallery/styles/css/image-gallery.css"
-import ImageGallery from 'react-image-gallery'
-import { ReactImageGalleryItem } from "react-image-gallery"
 import { createContext, useEffect, useReducer} from "react"
 import { GridLoader } from "react-spinners"
 
@@ -18,7 +16,7 @@ import { GridLoader } from "react-spinners"
 import { MapNavbar } from "@/app/components/map/navitems/MapNavbar"
 import { Footer } from "@/app/components/Footer"
 import { LeaderBoard }  from "@/app/components/map/LeaderBoard"
-import { fetchCoordinates, iNatFetch, setCredentials} from"@/app/functions/MapFunctions"
+import { fetchCoordinates, iNatFetch} from"@/app/functions/MapFunctions"
 
 //dynamic imports
 import dynamic from 'next/dynamic'

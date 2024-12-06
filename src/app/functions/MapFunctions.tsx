@@ -11,7 +11,6 @@ import { iNatApiResult, iNatFetchObj} from "@/app/api/collections/inaturalist/ro
 import { MapDataAction, MapDataState } from "../reducers/MapDataReducer";
 import { Dispatch } from "react";
 
-
 //When the map first loads it will load here, If there is an error it will also load back to here
 export const defaultCoordinates: LatLngLiteral = { lat: 39.35, lng: -120.26 }
 
@@ -26,7 +25,9 @@ export const defaultCoordinates: LatLngLiteral = { lat: 39.35, lng: -120.26 }
  */
 const getCoords = async (): Promise<{ longitude: number; latitude: number; }> => {
     const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject)
+        navigator.geolocation.getCurrentPosition(resolve, (error) => {
+            reject(new Error(`Geolocation error: ${error.message}`));
+        });
     })
     
     return {
@@ -47,28 +48,47 @@ export const fetchCoordinates = async (
     dispatch : Dispatch<MapDataAction>
     
     ) => {
+        try {
+            if (state.displayOptions.useCurrentLocation) {
+                const coords = await getCoords()
         
-    if (state.displayOptions.useCurrentLocation) {
-        const coords = await getCoords()
+                if (!state.coordinates || state.coordinates.lat !== coords.latitude || state.coordinates.lng !== coords.longitude) {
+                   dispatch({ 
+                    type: "SET_COORDINATES",
+                    payload: {
+                        lat: coords.latitude, 
+                        lng: coords.longitude }})
+                }
+                uncheckLocationCheckbox(state,dispatch)
 
-        if (!state.coordinates || state.coordinates.lat !== coords.latitude || state.coordinates.lng !== coords.longitude) {
-           dispatch({ 
-            type: "SET_COORDINATES",
-            payload: {
-                lat: coords.latitude, 
-                lng: coords.longitude }})
-        }
+            } else {
+                dispatch({ 
+                    type: "SET_COORDINATES",
+                    payload: state.coordinates || defaultCoordinates,
+                })
+            }
+        } catch (error) {
             dispatch({
-                type: "SET_DISPLAY_OPTIONS",
-                payload: {
-                    ...state.displayOptions,
-                    useCurrentLocation: false}
-                 })
-    } else {
-        dispatch({ 
-            type: "SET_COORDINATES",
-            payload: state.coordinates || defaultCoordinates,
-        })
+                type: "SET_COORDINATES",
+                payload: defaultCoordinates,
+            })
+
+            uncheckLocationCheckbox(state,dispatch)
+    }
+}
+
+function uncheckLocationCheckbox(
+    state : MapDataState, 
+    dispatch : Dispatch<MapDataAction>
+) {
+
+    if (state.displayOptions.useCurrentLocation) {
+        dispatch({
+            type: "SET_DISPLAY_OPTIONS",
+            payload: {
+                ...state.displayOptions,
+                useCurrentLocation: false}
+            })
     }
 }
 
