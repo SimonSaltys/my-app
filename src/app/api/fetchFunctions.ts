@@ -9,7 +9,7 @@
 
 import { iNatApiResponse, iNatApiResult, iNatFetchObj, iNatLeaderUrl, iNatLeadingUser, iNatUrl, iNatUserObservation } from "./collections/inaturalist/route"
 import { DisplayOptions } from "../components/map/Map"
-import L, { LatLngLiteral } from 'leaflet'
+import { LatLngLiteral } from 'leaflet'
 
 export const basicFetch = async <ReturnType>(endpoint: string): Promise<ReturnType> => {
     const response: Response = await fetch(endpoint, { next: { revalidate: 86400 } })
@@ -88,6 +88,10 @@ export const fetchSpecimenObservations = async (specimenName: string, coordinate
                         observers : leadingUsers.observers} }
 }
 
+/**
+ * Pushes the observation and its images 
+ * if the search option conditions are correct
+ */
 function pushIfValid(
     observation : iNatUserObservation, 
     searchOptions : DisplayOptions, 

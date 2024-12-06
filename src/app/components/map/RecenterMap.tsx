@@ -1,3 +1,10 @@
+/**
+ * @file /src/app/components/map/RecenterMap.tsx
+ * 
+ * @fileoverview Recenter the map to the next position when the position is updated
+ */
+
+
 import { LatLngLiteral } from 'leaflet';
 import { useMap } from 'react-leaflet';
 import { useEffect } from 'react';

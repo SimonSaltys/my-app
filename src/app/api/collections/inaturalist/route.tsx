@@ -59,7 +59,11 @@ export interface iNatFetchObj {
 }
 
 
-
+/**
+ * Makes the url to be fetched by the iNat API
+ * @param fetchObj all the parameters to fetch by
+ * @returns the completed url
+ */
 export const iNatUrl = (fetchObj: iNatFetchObj): string => {
     const { specimenName, coordinate, searchOptions } = fetchObj;
 
@@ -81,6 +85,12 @@ export const iNatUrl = (fetchObj: iNatFetchObj): string => {
     return `https://api.inaturalist.org/v1/observations?${params.toString()}`;
 };
 
+/**
+ * Makes the url to be fetched by the iNat API
+ * @param fetchObj all the parameters to fetch by
+ * @param type should we fetch leaders or observers
+ * @returns the completed url
+ */
 export const iNatLeaderUrl = (fetchObj: iNatFetchObj, type: string): string => {
     const { specimenName, coordinate, searchOptions } = fetchObj;
 
@@ -101,6 +111,11 @@ export const iNatLeaderUrl = (fetchObj: iNatFetchObj, type: string): string => {
     return `https://api.inaturalist.org/v1/observations/${type}?${params.toString()}`;
 };
 
+/**
+ * The exposed post endpoint `collections/inaturalist`
+ * @param request 
+ * @returns 
+ */
 export async function POST(request: Request) {
     
     try {

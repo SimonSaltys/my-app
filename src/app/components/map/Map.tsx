@@ -1,4 +1,13 @@
+/**
+ * @file /src/app/components/map/Map.tsx
+ * 
+ * @fileoverview Displays the map with all its relative points controlled by the 
+ * `MapOptions`
+ * 
+ * @todo
+ */
 "use client"
+
 import 'leaflet/dist/leaflet.css'
 import { MapContainer, TileLayer, Marker, Popup, Circle, useMapEvents } from 'react-leaflet'
 import { useState,useEffect, useContext} from "react"
@@ -7,12 +16,19 @@ import L from 'leaflet'
 import RecenterMap from './RecenterMap'
 import { MapContext, MapContextData } from './MapClientWrapper'
 
-
+/**
+ * Value of the searched specimen 
+ //todo remove when interfacing with the actual application
+ */
 export interface SearchValues {
     specimenName : string | undefined
     taxonId : number 
 }
 
+/**
+ * The values the user can change 
+ * to format their search queries
+ */
 export interface DisplayOptions {
     radius : number
     displayAmount : number
@@ -21,6 +37,7 @@ export interface DisplayOptions {
     gradeType : string
     useCurrentLocation : boolean
 }
+
 export default function Map() {
 
     const [showMapOptions, setShowMapOptions] = useState<boolean>(false)
@@ -56,6 +73,7 @@ export default function Map() {
         shadowSize: [41, 41]
       });
 
+      
     const LocationFinder = () => {
         const map = useMapEvents({
             click(e) {

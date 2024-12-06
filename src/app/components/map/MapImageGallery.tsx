@@ -1,3 +1,11 @@
+/**
+ * @file /src/app/components/map/MapImageGallery.tsx
+ * 
+ * @fileoverview Displays the images of the currently selected location
+ * on the map
+ * 
+ * @todo
+ */
 "use client"
 
 import { setCredentials } from "@/app/functions/MapFunctions";
@@ -5,8 +13,6 @@ import { useContext, useEffect } from "react";
 import { ReactImageGalleryItem } from "react-image-gallery";
 import { MapContext, MapContextData } from "./MapClientWrapper";
 import ImageGallery from 'react-image-gallery'
-import { stat } from "fs";
-
 
 export const MapImageGallery = () => { 
     const context = useContext(MapContext) as MapContextData

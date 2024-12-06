@@ -3,7 +3,7 @@
  * 
  * @fileoverview Holds the relative navbar information for the map
  * 
- * @todo make it tell the map client what to display
+ * @todo
  */
 "use client"
 

@@ -3,12 +3,11 @@
  * 
  * @fileoverview Drop down menu for different search parameters on the map
  * 
- * @todo work on the use my location to use the users current location as a base search
+ * @todo
  */
 
 "use client"
-import { DisplayOptions } from "./Map"
-import { Dispatch, SetStateAction, useContext, useState } from "react"
+import { useContext, useState } from "react"
 import { MapContext, MapContextData } from "./MapClientWrapper";
 
 export function MapOptions() {
