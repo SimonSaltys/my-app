@@ -18,8 +18,8 @@ export function MapOptions() {
     const displayOptions = data.displayOptions;
     const [radius, setRadius] = useState<number>(displayOptions.radius);
     const [displayAmount, setDisplayAmount] = useState<number>(displayOptions.displayAmount);
-    const [beforeDate, setBeforeDate] = useState<Date | undefined>(displayOptions.beforeDate);  
-    const [sinceDate, setSinceDate] = useState<Date | undefined>(displayOptions.sinceDate);
+    const [beforeDate, setBeforeDate] = useState<string>(displayOptions.beforeDate);  
+    const [sinceDate, setSinceDate] = useState<string>(displayOptions.sinceDate);
     const [gradeType, setGradeType] = useState<string>(displayOptions.gradeType);
     const[useCurrentLocation, setUseCurrentLocation] = useState<boolean>(displayOptions.useCurrentLocation);
 
@@ -75,8 +75,8 @@ export function MapOptions() {
             <input
                 id="date-before"
                 type="date"
-                value={beforeDate ? beforeDate.toISOString().split('T')[0] : ''}
-                onChange={(e) => setBeforeDate(e.target.value ? new Date(e.target.value) : undefined)}
+                value={beforeDate !== '' ? new Date(beforeDate).toISOString().split('T')[0] : ''}
+                onChange={(e) => setBeforeDate(e.target.value)}
                 className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-300"
             />
 
@@ -87,8 +87,8 @@ export function MapOptions() {
             <input
                 id="date-since"
                 type="date"
-                value={sinceDate ? sinceDate.toISOString().split('T')[0] : ''}
-                onChange={(e) => setSinceDate(e.target.value ? new Date(e.target.value) : undefined)}
+                value={sinceDate !== '' ? new Date(sinceDate).toISOString().split('T')[0] : ''}
+                onChange={(e) => setSinceDate(e.target.value)}
                 className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-300"
             />
 

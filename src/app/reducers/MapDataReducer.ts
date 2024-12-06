@@ -29,8 +29,8 @@ export const MapDataInitialState: MapDataState = {
     displayOptions: {
         radius : 75,
         displayAmount : 20,
-        beforeDate : undefined,
-        sinceDate : undefined,
+        beforeDate : "",
+        sinceDate : "",
         gradeType : "needs_id,research,casual",
         useCurrentLocation : false },
 
@@ -45,7 +45,7 @@ export const MapDataInitialState: MapDataState = {
     observationTitle: "",
     observationLocation: "",
     observationDate: "",
-    observationIcon: "",
+    observationIcon: "img/blankIcon.jpg",
 };
 
 export type MapDataAction =

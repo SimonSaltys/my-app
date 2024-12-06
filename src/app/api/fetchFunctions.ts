@@ -74,8 +74,8 @@ export const fetchSpecimenObservations = async (specimenName: string, coordinate
             coordinates: {lat : result.geojson.coordinates[0], lng : result.geojson.coordinates[1]},
             images:  {original: image, thumbnail: result.photos[0].url, small : imageSmall}
         }
-        observedSpecimenArray.push(specimenInfo)
-        imageArray.push(specimenInfo.images)
+
+        pushIfValid(specimenInfo,searchOptions,imageArray,observedSpecimenArray)
     }
 
     //fetching the leaders
@@ -87,6 +87,37 @@ export const fetchSpecimenObservations = async (specimenName: string, coordinate
         leadingUsers : {identifiers : leadingUsers.identifiers,
                         observers : leadingUsers.observers} }
 }
+
+function pushIfValid(
+    observation : iNatUserObservation, 
+    searchOptions : DisplayOptions, 
+    imageArray : any[], 
+    observedSpecimenArray : iNatUserObservation[]) {
+
+    const observedDate = new Date(observation.observedDate)
+    const sinceDate = new Date(searchOptions.sinceDate)
+    const beforeDate = new Date(searchOptions.beforeDate)
+
+
+    if(!(imageArray.length < searchOptions.displayAmount))
+        return
+
+    if (searchOptions.sinceDate && observedDate < sinceDate) 
+        return 
+      
+
+    if (searchOptions.beforeDate && observedDate > beforeDate) 
+        return 
+
+    const validGradeTypes = searchOptions.gradeType.split(",");
+    if (!validGradeTypes.includes(observation.gradeType)) {
+      return
+    }
+    
+    observedSpecimenArray.push(observation)
+    imageArray.push(observation.images)
+}
+
 
 /**
  * Helper function to get the top identifiers and observers of this specimen

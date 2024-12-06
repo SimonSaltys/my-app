@@ -16,8 +16,8 @@ export interface SearchValues {
 export interface DisplayOptions {
     radius : number
     displayAmount : number
-    beforeDate: Date | undefined; 
-    sinceDate: Date | undefined; 
+    beforeDate: string
+    sinceDate: string
     gradeType : string
     useCurrentLocation : boolean
 }
@@ -143,7 +143,6 @@ export default function Map() {
                                                     alt="observation photo" 
                                                     className='inline-block w-[125px] h-[150px]' 
                                                 />
-                        
                                         </div>
                                     </Popup>
                                 </Marker>

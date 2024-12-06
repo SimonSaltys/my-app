@@ -24,7 +24,7 @@ export const defaultCoordinates: LatLngLiteral = { lat: 39.35, lng: -120.26 }
  * @returns {Promise<{ longitude: number, latitude: number }>}
  * @throws {GeolocationPositionError}
  */
-const getCoords = async () => {
+const getCoords = async (): Promise<{ longitude: number; latitude: number; }> => {
     const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject)
     })
@@ -105,6 +105,10 @@ export const iNatFetch = async (
     if (res.ok) {
         const json : iNatApiResult = await res.json()
         console.log(json);
+
+        const images : any[] = []
+        
+
 
         dispatch({
             type: "SET_API_FETCH",

@@ -23,6 +23,7 @@ import { fetchCoordinates, iNatFetch, setCredentials} from"@/app/functions/MapFu
 //dynamic imports
 import dynamic from 'next/dynamic'
 import MapDataReducer, { MapDataAction, MapDataInitialState, MapDataState } from "@/app/reducers/MapDataReducer"
+import { MapImageGallery } from "./MapImageGallery"
 const DynamicMap = dynamic(() => import('./Map'), {
     ssr: false 
 })
@@ -72,27 +73,7 @@ const MapClientWrapper = () => {
             </section>
             
             <section className={`lg:flex min-h-[600px] lg:w-1/3 items-center justify-center w-full flex-col ${state.activeSection === "images" ? "flex" : "hidden"}`}>
-                {state.observations.length > 0 && (
-                    <>
-                        <p className='flex w-full h-[10%] justify-center items-center text-2xl'>{(state.observationTitle as string)}</p>
-                        <div className='w-3/5 h-[70%] lg:h-[60%] lg:w-4/5'>
-                            <ImageGallery autoPlay items={state.images as ReactImageGalleryItem[]} slideInterval={4000} 
-                                onSlide={(currentIndex) => setCredentials(currentIndex, state,dispatch) } 
-                                onPlay={(currentIndex) => setCredentials(currentIndex, state, dispatch)}/>
-                        </div>
-                        <div className="flex flex-col items-center justify-center h-[160px] w-full">
-                            <div id='observationCredentials' className='flex flex-col h-[20%] xl:h-[30%] w-4/5 text-center items-center justify-center text-base xl:text-lg'>
-                                <p className="">{state.observationLocation}</p>
-                                <p className="">{state.observationDate}</p>
-                                <p className='mt-1'>
-                                    <img className='inline-block h-[48px] w-[48px] mr-4' src={state.observationIcon} alt='Observer Icon' />
-                                    <span className="">{state.observer}</span>
-                                </p>
-                            </div>
-                        </div>
-                        
-                    </>
-                )}
+               <MapImageGallery />
             </section>
     
             <section className={`lg:flex lg:w-1/3 min-h-[600px] flex-col justify-center items-center  ${state.activeSection === 'leaderboard' ? 'flex w-full' : 'hidden'} text-md`}>

@@ -58,6 +58,8 @@ export interface iNatFetchObj {
     searchOptions: DisplayOptions
 }
 
+
+
 export const iNatUrl = (fetchObj: iNatFetchObj): string => {
     const { specimenName, coordinate, searchOptions } = fetchObj;
 
@@ -69,13 +71,12 @@ export const iNatUrl = (fetchObj: iNatFetchObj): string => {
     params.set("quality_grade", searchOptions.gradeType);
 
     
-    if (searchOptions.sinceDate) {
-        params.set("d1", searchOptions.sinceDate.toISOString());
-    }
+    if (searchOptions.sinceDate != '') 
+        params.set("d1", new Date(searchOptions.sinceDate).toISOString())
+    
 
-    if (searchOptions.beforeDate) {
-        params.set("d2", searchOptions.beforeDate.toISOString());
-    }
+    if (searchOptions.beforeDate != '') 
+         params.set("d2", new Date(searchOptions.beforeDate).toISOString())
 
     return `https://api.inaturalist.org/v1/observations?${params.toString()}`;
 };
@@ -90,13 +91,12 @@ export const iNatLeaderUrl = (fetchObj: iNatFetchObj, type: string): string => {
     params.set("radius", searchOptions.radius.toString());
     params.set("quality_grade", searchOptions.gradeType);
 
-    if (searchOptions.sinceDate) {
-        params.set("d1", searchOptions.sinceDate.toISOString());
-    }
+    if (searchOptions.sinceDate != '') 
+        params.set("d1", new Date(searchOptions.sinceDate).toISOString())
+    
 
-    if (searchOptions.beforeDate) {
-        params.set("d2", searchOptions.beforeDate.toISOString());
-    }
+    if (searchOptions.beforeDate != '') 
+         params.set("d2", new Date(searchOptions.beforeDate).toISOString())
 
     return `https://api.inaturalist.org/v1/observations/${type}?${params.toString()}`;
 };
