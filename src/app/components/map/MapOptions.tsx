@@ -7,10 +7,15 @@
  */
 
 "use client"
-import { useContext, useState } from "react"
+//custom imports
 import { MapContext, MapContextData } from "./MapClientWrapper";
 
+//library imports
+import { useContext, useState } from "react"
+
 export function MapOptions() {
+
+    //The global context being used by all child components
     const context = useContext(MapContext) as MapContextData
     const data = context.state
 
@@ -22,9 +27,13 @@ export function MapOptions() {
     const [gradeType, setGradeType] = useState<string>(displayOptions.gradeType);
     const[useCurrentLocation, setUseCurrentLocation] = useState<boolean>(displayOptions.useCurrentLocation);
 
+    /**
+     * @param event the event called when the form is submitted
+     */
     const handleSubmit = (event : React.FormEvent) => {
         event.preventDefault()
 
+        //update the global state when the user submits the form
         context.dispatch({
             type:"SET_DISPLAY_OPTIONS",
             payload: {
@@ -38,7 +47,6 @@ export function MapOptions() {
         })
     }
     
-
     return (
     <>
     <form onSubmit={handleSubmit}>

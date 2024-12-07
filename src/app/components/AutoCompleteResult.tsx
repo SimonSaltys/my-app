@@ -1,3 +1,7 @@
+/**
+ * @deprecated This component is marked for removal in the future.
+ */
+
 "use client"
 
 export function AutoCompleteResult(props: { searchedValue: string }) {

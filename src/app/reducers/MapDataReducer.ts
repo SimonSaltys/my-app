@@ -1,3 +1,12 @@
+/**
+ * @file /src/app/reducers/MapDataReducer.ts
+ * 
+ * @fileoverview holds all the state that the children of the `MapClientWrapper` need
+ * to use and update 
+ * 
+ * @todo 
+ */
+
 import { LatLngLiteral } from "leaflet"
 import { iNatUserObservation, iNatLeadingUser } from "../api/collections/inaturalist/route"
 import { DisplayOptions, SearchValues } from "../components/map/Map"
@@ -9,7 +18,7 @@ export interface MapDataState {
     displayOptions : DisplayOptions
     activeSection : string,
     loading : boolean,
-    images : any[],
+    images : Image[],
     observations : iNatUserObservation[],
     topObservers : iNatLeadingUser[],
     topIdentifiers : iNatLeadingUser[],
@@ -18,6 +27,12 @@ export interface MapDataState {
     observationLocation : string,
     observationDate : string,
     observationIcon :  string
+}
+
+export interface Image {
+    original: string, 
+    thumbnail: string, 
+    small : string
 }
 
 export const MapDataInitialState: MapDataState = {
@@ -45,7 +60,7 @@ export const MapDataInitialState: MapDataState = {
     observationTitle: "",
     observationLocation: "",
     observationDate: "",
-    observationIcon: "img/blankIcon.jpg",
+    observationIcon: "/img/blankIcon.jpg",
 };
 
 export type MapDataAction =
@@ -58,6 +73,11 @@ export type MapDataAction =
 
     // Add other action types as needed
 
+/**
+ * @param state the global state of the map
+ * @param action what in the state to update
+ * @returns the newly updated state
+ */
 export default function MapDataReducer(
     state: MapDataState , 
     action: MapDataAction

@@ -7,23 +7,33 @@
  * @todo
  */
 "use client"
-
+//custom imports
 import { setCredentials } from "@/app/functions/MapFunctions";
+import { MapContext, MapContextData } from "./MapClientWrapper";
+
+//library imports
 import { useContext, useEffect } from "react";
 import { ReactImageGalleryItem } from "react-image-gallery";
-import { MapContext, MapContextData } from "./MapClientWrapper";
 import ImageGallery from 'react-image-gallery'
+import Image from "next/image";
 
+/**
+ * @returns a JSX component that holds the images of the 
+ * currently viewed observations on the map
+ */
 export const MapImageGallery = () => { 
+
+    //The global context being used by all child components
     const context = useContext(MapContext) as MapContextData
     const state = context.state
     const dispatch = context.dispatch
 
+    //When the user updates their search parameters, set the credentials back to the start
     useEffect(() => { 
-
         if(state.observations.length > 0)
             setCredentials(0,state,dispatch)
-    }, [state.displayOptions]); 
+         // eslint-disable-next-line react-hooks/exhaustive-deps 
+    }, [state.displayOptions])
 
     return (
         <>
@@ -41,7 +51,7 @@ export const MapImageGallery = () => {
                                 <p className="">{state.observationLocation}</p>
                                 <p className="">{state.observationDate}</p>
                                 <p className='mt-1'>
-                                    <img className='inline-block h-[48px] w-[48px] mr-4' src={state.observationIcon} alt='Observer Icon' />
+                                    <Image width={48} height={48} src={state.observationIcon} alt="Observer Icon" style={{ display: 'inline-block', marginRight: '1rem' }} />
                                     <span className="">{state.observer}</span>
                                 </p>
                             </div>

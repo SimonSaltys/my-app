@@ -13,8 +13,13 @@ import { Navbar } from "flowbite-react";
 import { NavButton } from "./NavButton";
 import { MapContext, MapContextData } from "../MapClientWrapper";
 
-
-
+/**
+ * @description The header for the MapClientWrapper component, 
+ * when this component gets smaller it is responsible for what is currently 
+ * being displayed in the wrapper.
+ * 
+ * @returns a JSX component for the header
+ */
 export function MapNavbar() {
     const context = useContext(MapContext) as MapContextData
 

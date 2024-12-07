@@ -11,11 +11,11 @@ import { LatLngLiteral } from 'leaflet';
 import { NextResponse } from 'next/server';
 import { fetchSpecimenObservations } from "@/app/api/fetchFunctions"
 
-
 export interface iNatApiResponse {
     total_results: number
     page: number
     per_page: number
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     results: any[]
 }
 
@@ -59,62 +59,12 @@ export interface iNatFetchObj {
 }
 
 
-/**
- * Makes the url to be fetched by the iNat API
- * @param fetchObj all the parameters to fetch by
- * @returns the completed url
- */
-export const iNatUrl = (fetchObj: iNatFetchObj): string => {
-    const { specimenName, coordinate, searchOptions } = fetchObj;
 
-    const params = new URLSearchParams();
-    params.set("taxon_name", encodeURIComponent(specimenName));
-    params.set("lat", coordinate.lat.toString());
-    params.set("lng", coordinate.lng.toString());
-    params.set("radius", searchOptions.radius.toString());
-    params.set("quality_grade", searchOptions.gradeType);
-
-    
-    if (searchOptions.sinceDate != '') 
-        params.set("d1", new Date(searchOptions.sinceDate).toISOString())
-    
-
-    if (searchOptions.beforeDate != '') 
-         params.set("d2", new Date(searchOptions.beforeDate).toISOString())
-
-    return `https://api.inaturalist.org/v1/observations?${params.toString()}`;
-};
-
-/**
- * Makes the url to be fetched by the iNat API
- * @param fetchObj all the parameters to fetch by
- * @param type should we fetch leaders or observers
- * @returns the completed url
- */
-export const iNatLeaderUrl = (fetchObj: iNatFetchObj, type: string): string => {
-    const { specimenName, coordinate, searchOptions } = fetchObj;
-
-    const params = new URLSearchParams();
-    params.set("taxon_name", encodeURIComponent(specimenName));
-    params.set("lat", coordinate.lat.toString());
-    params.set("lng", coordinate.lng.toString());
-    params.set("radius", searchOptions.radius.toString());
-    params.set("quality_grade", searchOptions.gradeType);
-
-    if (searchOptions.sinceDate != '') 
-        params.set("d1", new Date(searchOptions.sinceDate).toISOString())
-    
-
-    if (searchOptions.beforeDate != '') 
-         params.set("d2", new Date(searchOptions.beforeDate).toISOString())
-
-    return `https://api.inaturalist.org/v1/observations/${type}?${params.toString()}`;
-};
 
 /**
  * The exposed post endpoint `collections/inaturalist`
- * @param request 
- * @returns 
+ * @param request  
+ * @returns A response of the data fetched 
  */
 export async function POST(request: Request) {
     

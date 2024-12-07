@@ -12,7 +12,7 @@ import "react-image-gallery/styles/css/image-gallery.css"
 import { createContext, useEffect, useReducer} from "react"
 import { GridLoader } from "react-spinners"
 
-//my own imports
+//custom imports
 import { MapNavbar } from "@/app/components/map/navitems/MapNavbar"
 import { Footer } from "@/app/components/Footer"
 import { LeaderBoard }  from "@/app/components/map/LeaderBoard"
@@ -34,23 +34,23 @@ export interface MapContextData {
 export const MapContext = createContext<MapContextData | ''>('');
 
 /**
- * MapClientWrapper Component
+ * Wraps all the children that make up this component together
  * 
- * @returns {JSX.Element} A JSX element representing the MapClientWrapper component.
+ * @returns a JSX element representing the MapClientWrapper component.
  */
 const MapClientWrapper = () => {
     const [state, dispatch] = useReducer(MapDataReducer, MapDataInitialState);
     
     /*
-        every time the user updates the graph by moving around or changing parameters
-        we want to update the graph with the new data
+        Updates the data when the user updates their 
+        search parameters or clicks somewhere else on the map. 
     */
     useEffect(() => { 
 
         fetchCoordinates(state,dispatch)
         iNatFetch(state,dispatch)
-
-    }, [state.displayOptions, state.coordinates]); 
+         // eslint-disable-next-line react-hooks/exhaustive-deps 
+    }, [state.displayOptions, state.coordinates])
     
    
     return (

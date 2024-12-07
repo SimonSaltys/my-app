@@ -12,18 +12,15 @@ import { iNatLeadingUser } from "@/app/api/collections/inaturalist/route"
 import React from "react"
 
 /**
- * LeaderBoard component
- * 
- * This component displays the top observers and identifiers for a specific species, 
+ * @description this component displays the top observers and identifiers for a specific species, 
  * based on data passed in as props.
  * 
- * @param {Object} props - The component's props.
- * @param {Array} props.identifiers - An array of top identifiers for the species. Each entry in the array
+ * @param props.identifiers - An array of top identifiers for the species. Each entry in the array
  *                                     contains data about an individual identifier.
- * @param {Array} props.observers - An array of top observers for the species. Each entry in the array
+ * @param props.observers - An array of top observers for the species. Each entry in the array
  *                                   contains data about an individual observer.
  * 
- * @returns {JSX.Element} A JSX element representing the LeaderBoard component.
+ * @returns a JSX element representing the LeaderBoard component.
  */
 export function LeaderBoard(props : {identifiers : iNatLeadingUser[], observers : iNatLeadingUser[]}): JSX.Element {
 

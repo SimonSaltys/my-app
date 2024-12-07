@@ -7,9 +7,12 @@
  *  add in the constraint by date in api url 
  */
 
-import { iNatApiResponse, iNatApiResult, iNatFetchObj, iNatLeaderUrl, iNatLeadingUser, iNatUrl, iNatUserObservation } from "./collections/inaturalist/route"
+import { iNatApiResponse, iNatApiResult, iNatFetchObj, iNatLeadingUser, iNatUserObservation } from "./collections/inaturalist/route"
 import { DisplayOptions } from "../components/map/Map"
 import { LatLngLiteral } from 'leaflet'
+import { Image } from "../reducers/MapDataReducer";
+import { iNatUrl, iNatLeaderUrl } from '@/app/api/utils/inatUtils'
+
 
 export const basicFetch = async <ReturnType>(endpoint: string): Promise<ReturnType> => {
     const response: Response = await fetch(endpoint, { next: { revalidate: 86400 } })
@@ -21,11 +24,11 @@ export const basicFetch = async <ReturnType>(endpoint: string): Promise<ReturnTy
   };
 
   /**
-   * Fetches all observations, images, top identifiers and observers 
-   * from the INaturalist api
+   * @description fetches all observations, images, top identifiers and observers 
+   * from the iNaturalist api
    * 
    * @param specimenName the name of the specimen to get all the data for
-   * @param coordinate where in which to get the data
+   * @param coordinate the center position on the map to get the surrounding data for
    * @param searchOptions the options the user can select in the {@link DisplayOptions}
    * @returns the {@link iNatApiResult} which contains all the relevant data
    */
@@ -47,10 +50,10 @@ export const fetchSpecimenObservations = async (specimenName: string, coordinate
 
     //declaring return variables
     const observedSpecimenArray : iNatUserObservation[] = []
-    const imageArray :  {original : string, thumbnail : string, small : string}[] = []
+    const imageArray :  Image[] = []
 
 
-    for(let result of response.results) {
+    for(const result of response.results) {
         if(!result.photos[0] || !result.geojson.coordinates)
             continue
 
@@ -62,7 +65,7 @@ export const fetchSpecimenObservations = async (specimenName: string, coordinate
             user : {
                 userName: result.user.login,
                 userId: result.user.id,
-                userIcon: result.user.icon ?? 'img/blankIcon.jpg'
+                userIcon: result.user.icon ?? '/img/blankIcon.jpg'
             },
 
             //add more default values if the ?? fails
@@ -89,13 +92,18 @@ export const fetchSpecimenObservations = async (specimenName: string, coordinate
 }
 
 /**
- * Pushes the observation and its images 
+ * @description pushes the observation and its images 
  * if the search option conditions are correct
+ *
+ * @param observation the current observation to check
+ * @param searchOptions the options the user has specified
+ * @param imageArray the images of the observations to push to if valid
+ * @param observedSpecimenArray the observations to push to if valid
  */
 function pushIfValid(
     observation : iNatUserObservation, 
     searchOptions : DisplayOptions, 
-    imageArray : any[], 
+    imageArray : Image[], 
     observedSpecimenArray : iNatUserObservation[]) {
 
     const observedDate = new Date(observation.observedDate)
@@ -103,9 +111,11 @@ function pushIfValid(
     const beforeDate = new Date(searchOptions.beforeDate)
 
 
+    //make sure that the amount being displayed has not gone over the specified amount
     if(!(imageArray.length < searchOptions.displayAmount))
         return
 
+    //make sure the specimen has been observed in the correct date range
     if (searchOptions.sinceDate && observedDate < sinceDate) 
         return 
       
@@ -113,6 +123,7 @@ function pushIfValid(
     if (searchOptions.beforeDate && observedDate > beforeDate) 
         return 
 
+    //make sure the quality grade on the observation is what the user specified
     const validGradeTypes = searchOptions.gradeType.split(",");
     if (!validGradeTypes.includes(observation.gradeType)) {
       return
@@ -124,29 +135,32 @@ function pushIfValid(
 
 
 /**
- * Helper function to get the top identifiers and observers of this specimen
- * @param fetchObj the provided specimen and location
+ * @description helper function to get the top identifiers and observers of this specimen
+ * @param fetchObj the provided specimen, location, and user options
  * @returns the top identifiers and observers
  */
 const getLeadingUsers = async (fetchObj : iNatFetchObj): 
     Promise<{identifiers : iNatLeadingUser[], observers : iNatLeadingUser[]}> => {
 
+    //create the endpoints for both leaders and identifiers
     const endpointObservers = iNatLeaderUrl(fetchObj,'observers')
     const endpointIdentifiers = iNatLeaderUrl(fetchObj,'identifiers')
 
     const responseObservers : iNatApiResponse = await basicFetch<iNatApiResponse>(endpointObservers)
     const responseIdentifiers : iNatApiResponse = await basicFetch<iNatApiResponse>(endpointIdentifiers)
 
+    //if one of the responses is invalid return an empty array for each
     if(!responseObservers || !responseIdentifiers) 
         return {identifiers: [], observers: []}
 
     const leadingIdentifiers : iNatLeadingUser[] = [];
     const leadingObservers : iNatLeadingUser[] = [];
 
-    //populate observers
+    //populate the top ten observers
     const obvResult = responseObservers.results;
     for(let i = 0; i < 10; i++) {
         const leader : iNatLeadingUser = {
+            //creating the user
             user: {
                 userName: obvResult[i]?.user?.login ?? '',
                 userId: obvResult[i]?.user?.id ?? -1,    
@@ -157,10 +171,11 @@ const getLeadingUsers = async (fetchObj : iNatFetchObj):
         leadingObservers.push(leader)
     }
 
-    //populate leaders
+    //populate the top ten identifiers
     const idResult = responseIdentifiers.results;
     for(let i = 0; i < 10; i++) {
         const leader : iNatLeadingUser = {
+            //creating the user
             user: {
                 userName: idResult[i]?.user?.login ?? '',
                 userId: idResult[i]?.user?.id ?? -1,    

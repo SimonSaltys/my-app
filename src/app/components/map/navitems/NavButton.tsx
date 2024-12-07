@@ -7,7 +7,6 @@
  */
 
 "use client"
-
 import { Button } from "flowbite-react"
 
 interface NavButtonProps {
@@ -15,6 +14,11 @@ interface NavButtonProps {
   onClick: () => void
 }
 
+/**
+ * 
+ * @param props the label and what to do on button click
+ * @returns a JSX component of a button for the MapNavbar
+ */
 export function NavButton({ label, onClick }: NavButtonProps) {
   return (
     <Button className="bg-sea-glass text-black active:ring-4 active:ring-chanterelle-gold focus:ring-0 focus:ring-sea-glass" onClick={onClick}>
