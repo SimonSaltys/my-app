@@ -16,28 +16,8 @@ import L from 'leaflet'
 import RecenterMap from './RecenterMap'
 import { MapContext, MapContextData } from './MapClientWrapper'
 import Image from 'next/image'
+import { MapDataState } from '@/app/interfaces/mapInterfaces'
 
-/**
- * Value of the searched specimen 
- //todo remove when interfacing with the actual application
- */
-export interface SearchValues {
-    specimenName : string | undefined
-    taxonId : number 
-}
-
-/**
- * The values the user can change 
- * to format their search queries
- */
-export interface DisplayOptions {
-    radius : number
-    displayAmount : number
-    beforeDate: string
-    sinceDate: string
-    gradeType : string
-    useCurrentLocation : boolean
-}
 
 /**
  * @returns a JSX component which displays a map of the all the observations of 
@@ -49,7 +29,7 @@ export default function Map() {
     //The global context being used by all child components
     const context = useContext(MapContext) as MapContextData
     const dispatch = context.dispatch;
-    const data = context.state;
+    const data : MapDataState = context.state;
 
     //Getting the tile map to be shown on the map
     const lightModeTiles: string = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png'

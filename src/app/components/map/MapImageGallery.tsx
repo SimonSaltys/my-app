@@ -8,7 +8,7 @@
  */
 "use client"
 //custom imports
-import { setCredentials } from "@/app/functions/MapFunctions";
+import { setCredentials } from "@/app/functions/mapFunctions";
 import { MapContext, MapContextData } from "./MapClientWrapper";
 
 //library imports

@@ -8,7 +8,7 @@
 
 "use client"
 
-import { iNatLeadingUser } from "@/app/api/collections/inaturalist/route"
+import { iNatLeadingUser } from "@/app/interfaces/mapInterfaces"
 import React from "react"
 
 /**

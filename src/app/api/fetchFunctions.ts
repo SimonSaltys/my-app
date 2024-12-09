@@ -7,11 +7,10 @@
  *  add in the constraint by date in api url 
  */
 
-import { iNatApiResponse, iNatApiResult, iNatFetchObj, iNatLeadingUser, iNatUserObservation } from "./collections/inaturalist/route"
-import { DisplayOptions } from "../components/map/Map"
-import { LatLngLiteral } from 'leaflet'
-import { Image } from "../reducers/MapDataReducer";
+
 import { iNatUrl, iNatLeaderUrl } from '@/app/api/utils/inatUtils'
+import { LatLngLiteral } from 'leaflet';
+import { DisplayOptions, iNatApiResult, iNatFetchObj, iNatApiResponse, iNatUserObservation, iNatLeadingUser, Image } from '../interfaces/mapInterfaces';
 
 
 export const basicFetch = async <ReturnType>(endpoint: string): Promise<ReturnType> => {
@@ -50,7 +49,7 @@ export const fetchSpecimenObservations = async (specimenName: string, coordinate
 
     //declaring return variables
     const observedSpecimenArray : iNatUserObservation[] = []
-    const imageArray :  Image[] = []
+    const imageArray : Image[] = []
 
 
     for(const result of response.results) {

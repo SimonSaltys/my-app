@@ -1,4 +1,4 @@
-import { iNatFetchObj } from "../collections/inaturalist/route";
+import { iNatFetchObj } from "@/app/interfaces/mapInterfaces";
 
 /**
  * @description creates the url to be fetched by the iNat API

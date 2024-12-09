@@ -16,12 +16,13 @@ import { GridLoader } from "react-spinners"
 import { MapNavbar } from "@/app/components/map/navitems/MapNavbar"
 import { Footer } from "@/app/components/Footer"
 import { LeaderBoard }  from "@/app/components/map/LeaderBoard"
-import { fetchCoordinates, iNatFetch} from"@/app/functions/MapFunctions"
+import { fetchCoordinates, iNatFetch} from"@/app/functions/mapFunctions"
+import MapDataReducer, { MapDataAction } from "@/app/reducers/MapDataReducer"
+import { MapImageGallery } from "./MapImageGallery"
+import { MapDataState, MapDataInitialState } from "@/app/interfaces/mapInterfaces"
 
 //dynamic imports
 import dynamic from 'next/dynamic'
-import MapDataReducer, { MapDataAction, MapDataInitialState, MapDataState } from "@/app/reducers/MapDataReducer"
-import { MapImageGallery } from "./MapImageGallery"
 const DynamicMap = dynamic(() => import('./Map'), {
     ssr: false 
 })

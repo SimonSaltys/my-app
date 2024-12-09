@@ -6,60 +6,8 @@
  * @todo 
  */
 
-import { DisplayOptions } from '@/app/components/map/Map';
-import { LatLngLiteral } from 'leaflet';
 import { NextResponse } from 'next/server';
 import { fetchSpecimenObservations } from "@/app/api/fetchFunctions"
-
-export interface iNatApiResponse {
-    total_results: number
-    page: number
-    per_page: number
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    results: any[]
-}
-
-//The final result that the MapClientWrapper will use
-export interface iNatApiResult {
-    observations : iNatUserObservation[] | []
-    images : {original : string, thumbnail : string, small : string}[] | []
-    leadingUsers : {identifiers : iNatLeadingUser[], observers : iNatLeadingUser[]}
-}
-
-//A single observation of the specified specimen by a user
-export interface iNatUserObservation {
-    user : iNatUser
-    observedDate : string
-    species_guess : string
-    taxon_name : string
-    place_guess : string
-    coordinates : LatLngLiteral
-    gradeType: string 
-    images : {original : string, thumbnail : string, small : string}
-}
-
-//Represents leading user of either identifier or observation
-export interface iNatLeadingUser {
-    user : iNatUser
-    count : number
-}
-
-//Represents a user on the inaturalist site 
-export interface iNatUser {
-    userName : string
-    userId : number
-    userIcon: string
-}
-
-//The initial search query that will be sent to the inat api
-export interface iNatFetchObj {
-    specimenName: string
-    coordinate : LatLngLiteral  
-    searchOptions: DisplayOptions
-}
-
-
-
 
 /**
  * The exposed post endpoint `collections/inaturalist`

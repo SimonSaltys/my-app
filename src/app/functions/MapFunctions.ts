@@ -6,13 +6,9 @@
  * @todo 
  */
 
-import { LatLngLiteral } from "leaflet";
-import { iNatApiResult, iNatFetchObj} from "@/app/api/collections/inaturalist/route"
-import { MapDataAction, MapDataState } from "../reducers/MapDataReducer";
+import { defaultCoordinates, iNatApiResult, iNatFetchObj, MapDataState} from "@/app/interfaces/mapInterfaces"
 import { Dispatch } from "react";
-
-//When the map first loads it will load here, If there is an error it will also load back to here
-export const defaultCoordinates: LatLngLiteral = { lat: 39.35, lng: -120.26 }
+import { MapDataAction } from "@/app/reducers/MapDataReducer";
 
 /**
  * @description Retrieves the user's current geographical coordinates using the browser's Geolocation API.
