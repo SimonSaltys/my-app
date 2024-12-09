@@ -1,5 +1,5 @@
 /**
- * @file /src/app/functions/MapFunctions.tsx
+ * @file /src/app/functions/mapFunctions.tsx
  * 
  * @fileoverview Contains all the functions for all Map components to use
  * 
