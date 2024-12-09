@@ -17,6 +17,7 @@ const config: Config = {
         'dune-grass': '#D5CB9F',          // Dune Grass
         'northern-sky': '#CDDAD5',        // Northern Sky
         'sand': '#F5F3E7',                // Sand
+        'mat-dark': '#212121',            // Mat Black
         background: "var(--background)",
         foreground: "var(--foreground)",
       },

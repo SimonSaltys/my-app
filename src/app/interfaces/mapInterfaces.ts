@@ -12,6 +12,12 @@ import { LatLngLiteral } from "leaflet"
 //When the map first loads it will load here, If there is an error it will also load back to here
 export const defaultCoordinates: LatLngLiteral = { lat: 39.35, lng: -120.26 }
 
+export const userPageUrl : string = "https://www.inaturalist.org/people/"
+
+export const observationUrl : string = "https://www.inaturalist.org/observations/"
+
+export const observationTaxonUrl : string = "https://www.inaturalist.org/taxa/"
+
 /**
  * Value of the searched specimen 
  //todo remove when interfacing with the actual application
@@ -53,10 +59,12 @@ export interface iNatApiResult {
 
 //A single observation of the specified specimen by a user
 export interface iNatUserObservation {
+    id : string
     user : iNatUser
     observedDate : string
     species_guess : string
     taxon_name : string
+    taxon_id : string
     place_guess : string
     coordinates : LatLngLiteral
     gradeType: string 

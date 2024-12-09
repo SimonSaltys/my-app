@@ -16,7 +16,7 @@ import L from 'leaflet'
 import RecenterMap from './RecenterMap'
 import { MapContext, MapContextData } from './MapClientWrapper'
 import Image from 'next/image'
-import { MapDataState } from '@/app/interfaces/mapInterfaces'
+import { MapDataState, observationTaxonUrl, observationUrl, userPageUrl } from '@/app/interfaces/mapInterfaces'
 
 
 /**
@@ -134,23 +134,39 @@ export default function Map() {
                                     position={[observation.coordinates.lng, observation.coordinates.lat]} 
                                     icon={observationIcon}
                                 >
-                                    <Popup>
-                                        <div className='flex h-[200px] w-[300px] justify-between'>
-                                            <div>
-                                                <p className='text-center text-[20px] !mt-0 !mb-[12px] text-[#004C46] dark:text-[#F5F3E7]'>
-                                                    {observation.taxon_name}
-                                                </p>
-                                                <p className='text-[14px] !mt-0 !mb-[12px]'>Observer: {observation.user.userName ?? ''}</p>
-                                                <p className='text-[14px] !m-0 !mb-[12px]'>Date: {observation.observedDate}</p>
-                                                <p className='text-[14px] !m-0 !mb-[12px]'>Verifiable: {observation.gradeType}</p>
-
+                                   <Popup>
+                                        <div className="flex h-[200px] w-[300px] justify-between text-[#004C46">
+                                            <div className="flex flex-col justify-between text-old-growth-green">            
+                                                <a  
+                                                        id="herb-anchor" 
+                                                        href={observationTaxonUrl + observation.taxon_id} 
+                                                        target="_blank"
+                                                        className="text-center !m-0 !text-lg"
+                                                    >
+                                                       {observation.taxon_name}
+                                                    </a>
+                                                <div className="h-[80%] flex flex-col justify-evenly dark:text-[#D5CB9F]">
+                                                    <a 
+                                                        id="herb-anchor" 
+                                                        href={userPageUrl + observation.user.userName} 
+                                                        target="_blank"
+                                                        className="text-sm"
+                                                    >
+                                                        Observer: {observation.user.userName}
+                                                    </a>
+                                                    <p className="text-[14px] !m-0">Date: {observation.observedDate}</p>
+                                                    <p className="text-[14px] !m-0">Verifiable: {observation.gradeType}</p>
+                                                </div>
                                             </div>
-
-                                                <Image src={observation.images.small} 
-                                                    alt="observation photo"
-                                                    width={125}
-                                                    height={150} />
-                                            
+                                            <a id="herb-anchor" href={observationUrl + observation.id} target="_blank">
+                                                <Image 
+                                                    src={observation.images.small} 
+                                                    className="h-[200px] w-[140px] object-cover" 
+                                                    alt="observation photo" 
+                                                    width={125} 
+                                                    height={150}
+                                                />
+                                            </a>
                                         </div>
                                     </Popup>
                                 </Marker>

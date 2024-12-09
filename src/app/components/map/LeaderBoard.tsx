@@ -8,7 +8,7 @@
 
 "use client"
 
-import { iNatLeadingUser } from "@/app/interfaces/mapInterfaces"
+import { iNatLeadingUser, userPageUrl } from "@/app/interfaces/mapInterfaces"
 import React from "react"
 
 /**
@@ -27,7 +27,7 @@ export function LeaderBoard(props : {identifiers : iNatLeadingUser[], observers 
     return(
         <>
         { props.observers &&
-            <div className="bg-dune-grass grid grid-cols-3 w-[95%] h-full my-4 rounded-lg">
+            <div className="bg-dune-grass dark:bg-[#212121] grid grid-cols-3 w-[95%] h-full my-4 rounded-lg">
                  <div className="flex border-b justify-center items-center">#</div>
                  <div className="flex border-b justify-center items-center">Observer</div>
                  <div className="flex border-b justify-center items-center">Observations</div>
@@ -35,7 +35,9 @@ export function LeaderBoard(props : {identifiers : iNatLeadingUser[], observers 
                  {props.observers.map((observer, index) => (
                         <React.Fragment key={index}>
                             <div className="flex justify-center items-center">{index + 1}</div>
-                            <div className="flex justify-center items-center">{observer.user.userName}</div>
+                            <div className="flex justify-center items-center">  
+                                <a id='' href={userPageUrl + observer.user.userName} 
+                                                        target="_blank">{observer.user.userName}</a></div>
                             <div className="flex justify-center items-center">{observer.count}</div>
                         </React.Fragment>
                     ))}
@@ -44,7 +46,7 @@ export function LeaderBoard(props : {identifiers : iNatLeadingUser[], observers 
         }
 
         { props.identifiers &&
-             <div className="bg-dune-grass grid grid-cols-3 w-[95%] h-full my-4 rounded-lg">
+             <div className="bg-dune-grass dark:bg-[#212121] grid grid-cols-3 w-[95%] h-full my-4 rounded-lg">
                  <div className="flex border-b justify-center items-center">#</div>
                  <div className="flex border-b justify-center items-center">Identifier</div>
                  <div className="flex border-b justify-center items-center">Identifications</div>
@@ -53,7 +55,8 @@ export function LeaderBoard(props : {identifiers : iNatLeadingUser[], observers 
                  {props.identifiers.map((identifier, index) => (
                         <React.Fragment key={index}>
                             <div className="flex justify-center items-center">{index + 1}</div>
-                            <div className="flex justify-center items-center">{identifier.user.userName}</div>
+                            <div className="flex justify-center items-center"> <a id='' href={userPageUrl + identifier.user.userName} 
+                                                        target="_blank">{identifier.user.userName}</a></div>
                             <div className="flex justify-center items-center">{identifier.count}</div>
                         </React.Fragment>
                     ))}

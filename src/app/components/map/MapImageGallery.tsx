@@ -16,6 +16,7 @@ import { useContext, useEffect } from "react";
 import { ReactImageGalleryItem } from "react-image-gallery";
 import ImageGallery from 'react-image-gallery'
 import Image from "next/image";
+import { userPageUrl } from "@/app/interfaces/mapInterfaces";
 
 /**
  * @returns a JSX component that holds the images of the 
@@ -51,8 +52,14 @@ export const MapImageGallery = () => {
                                 <p className="">{state.observationLocation}</p>
                                 <p className="">{state.observationDate}</p>
                                 <p className='mt-1'>
-                                    <Image width={48} height={48} src={state.observationIcon} alt="Observer Icon" style={{ display: 'inline-block', marginRight: '1rem' }} />
-                                    <span className="">{state.observer}</span>
+                                    <Image width={48} height={48} 
+                                        src={state.observationIcon} 
+                                        alt="Observer Icon" 
+                                        style={{ display: 'inline-block', marginRight: '1rem' }}
+                                        />
+                                    <span className="">
+                                        <a href={userPageUrl + state.observer} target="_blank">{state.observer}</a>
+                                    </span>
                                 </p>
                             </div>
                         </div>
