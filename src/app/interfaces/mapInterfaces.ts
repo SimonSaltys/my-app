@@ -1,3 +1,12 @@
+/**
+ * @file /src/app/interfaces/mapInterfaces.ts
+ * 
+ * @fileoverview Contains all the interfaces for all Map components to use
+ * 
+ * @todo 
+ */
+
+
 import { LatLngLiteral } from "leaflet"
 
 //When the map first loads it will load here, If there is an error it will also load back to here
@@ -25,6 +34,7 @@ export interface DisplayOptions {
     useCurrentLocation : boolean
 }
 
+//state for the api calls
 
 export interface iNatApiResponse {
     total_results: number
@@ -72,6 +82,8 @@ export interface iNatFetchObj {
     coordinate : LatLngLiteral  
     searchOptions: DisplayOptions
 }
+
+//State for the reducers and context
 
 export interface MapDataState {
     searchedValue : SearchValues
